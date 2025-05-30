@@ -15,7 +15,8 @@ const Database={
     },
     async query(sql,parametros=[]){
         const result=await globalThis.Database.query(sql,parametros);
-        return result.rows;
+      
+         return result.rows;
     }
 }
 module.exports=Database;

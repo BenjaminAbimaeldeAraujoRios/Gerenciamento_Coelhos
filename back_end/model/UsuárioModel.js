@@ -4,13 +4,13 @@ class Usuario{
     async selectUsuarios(){
         
         const res= await Database.query("Select * from usuario");
-        return res.rows;
+        return res;
         
     }
      async selectUsuarios_por_id(id){
         
         const res= await Database.query("Select * from usuario WHERE id_usuario=$1",[id]);
-        return res.rows;
+          return res;
     }
    async insertUsuario(usuario){
         
@@ -22,7 +22,7 @@ class Usuario{
     
         const sql=("UPDATE  usuario set  nome_usuario=$1,email=$2,senha=$3 where id_usuario=$4")
         const res= await Database.query(sql,[usuario.nome_usuario,usuario.email,usuario.senha,id]);
-    
+      return res;
         
     }
       async excluirUsuario(id){

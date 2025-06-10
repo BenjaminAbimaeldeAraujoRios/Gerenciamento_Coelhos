@@ -1,11 +1,13 @@
 const { Usuario } = require("../model/UsuárioModel");
 const{Professor}=require("../model/ProfessorModel");
 const{Alunos}=require("../model/AlunoModel");
+const{CoelhoModel}=require("../model/CoelhoModel");
 
 module.exports.rotas = function(app) {
     const UsuarioRota = new Usuario();//Instância a classe Usuario para usar as funções da mesma
     const ProfessorRota=new Professor();
     const AlunoRota=new Alunos();
+    const CoelhosRota=new CoelhoModel();
 
 //Usuário
     app.get('/usuario/:id', async (req, res) => {
@@ -85,6 +87,31 @@ app.delete('/aluno/:id',async (require,response)=>{
     await AlunoRota.excluirAluno(require.params.id);
     response.sendStatus(204);
 });
+///Coelho
+app.post('/coelho',async (require,response)=>{
+    
+    await CoelhosRota.insertCoelho(require.body);
+    response.sendStatus(201);
+});
+app.get('/coelhos',async (require,response)=>{
+    const coelhos=await CoelhosRota.selectCoelhos();
+    response.json(coelhos);
+});
+app.get('/coelho/:id',async (require,response)=>{
+    const coelho=await CoelhosRota.selectCoelhos_por_id(require.params.id);
+    response.json(coelho);
+});
+app.delete('/coelho/:id',async (require,response)=>{
+  
+    await CoelhosRota.excluirCoelho(require.params.id);
+    response.sendStatus(204);
+});
+app.patch('/coelho/:id',async (require,response)=>{
+   
+    await CoelhosRota.updateCoelho(require.params.id,require.body);
+    response.sendStatus(200);
+});
+
 
 
 

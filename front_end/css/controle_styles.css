@@ -1,0 +1,79 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background-color: #67d5b5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.container {
+  background-color: #a7e6c3;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 800px;
+}
+
+.tabela-container {
+  background-color: #d0f3e0;
+  padding: 10px;
+  border-radius: 5px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  background-color: #4b8460;
+  color: white;
+  text-align: left;
+  padding: 10px;
+}
+
+tbody td {
+  padding: 10px;
+  background-color: #d0f3e0;
+  border-bottom: 2px solid #bdeacb;
+}
+
+.botoes {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 180px;
+  text-align: center;
+}
+
+.redefinir {
+  background-color: #3e9c1a;
+}
+
+.bloquear {
+  background-color: #003f1c;
+}
+
+.voltar {
+  background-color: #205a32;
+}

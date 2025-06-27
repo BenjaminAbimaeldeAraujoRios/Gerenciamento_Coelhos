@@ -1,40 +1,79 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ficha do Animal</title>
-  <link rel="stylesheet" href="/front_end/css/fichas_styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ficha do Coelho</title>
+  <link rel="stylesheet" href="/front_end/css/fichas_styles.css" />
 </head>
 <body>
   <div class="container">
     <div class="form-box">
       <div class="left">
-        <label>Número <input type="text" id="numero"></label>
-        <label>Raça <input type="text" id="raca"></label>
-        <label>Data Nasc <input type="text" id="dataNasc"></label>
-        <label>Peso Nasc <input type="text" id="pesoNasc"></label>
-        <label>Data Desm <input type="text" id="dataDesm"></label>
-        <label>Peso Desm <input type="text" id="pesoDesm"></label>
-        <label>Peso Atual <input type="text" id="pesoAtual"></label>
+        <label for="numero_coelho">Número
+          <input type="text" id="numero_coelho" name="numero_coelho" readonly>
+        </label>
+
+        <label for="raca_coelho">Raça
+          <input type="text" id="raca_coelho" name="raca_coelho">
+        </label>
+
+        <label for="data_nascimento_coelho">Data Nasc
+          <input type="date" id="data_nascimento_coelho" name="data_nascimento_coelho">
+        </label>
+
+        <label for="peso_nascimento">Peso ao Nascer
+          <input type="text" id="peso_nascimento" name="peso_nascimento">
+        </label>
+
+        <label for="data_desmame">Data Desmame
+          <input type="date" id="data_desmame" name="data_desmame">
+        </label>
+
+        <label for="peso_atual">Peso Atual
+          <input type="text" id="peso_atual" name="peso_atual">
+        </label>
       </div>
+
       <div class="right">
-        <label>Nome <input type="text" id="nome"></label>
-        <label>Sexo <input type="text" id="sexo"></label>
-        <label>Transferido para <input type="text" id="transferido"></label>
-        <label>Matriz <input type="text" id="matriz"></label>
-        <label>Reprodutor <input type="text" id="reprodutor"></label>
+        <label for="nome_coelho">Nome
+          <input type="text" id="nome_coelho" name="nome_coelho">
+        </label>
+
+        <label for="sexo_coelho">Sexo
+          <input type="text" id="sexo_coelho" name="sexo_coelho">
+        </label>
+
+        <label for="tipo_coelho">Tipo
+          <input type="text" id="tipo_coelho" name="tipo_coelho">
+        </label>
+
+        <label for="matriz_coelho">Matriz
+          <input type="text" id="matriz_coelho" name="matriz_coelho">
+        </label>
+
+        <label for="reprodutor_coelho">Reprodutor
+          <input type="text" id="reprodutor_coelho" name="reprodutor_coelho">
+        </label>
+
+        <label for="observacoes_coelho">Observações
+          <textarea id="observacoes_coelho" name="observacoes_coelho" rows="4"></textarea>
+        </label>
+
+        <input type="hidden" id="id_usuario" name="id_usuario">
 
         <div class="buttons">
-          <button class="update">Atualizar</button>
-          <button class="delete">Deletar</button>
-          <button class="back">Voltar</button>
+          <button class="update" type="button">Atualizar</button>
+          <button class="delete" type="button">Deletar</button>
+          <button class="back" type="button" onclick="window.history.back()">Voltar</button>
         </div>
       </div>
     </div>
   </div>
 
-  <script src=""></script>
+  <script src="/front_end/js/ficha_coelho.js"></script>
 </body>
 </html>
+
+
 

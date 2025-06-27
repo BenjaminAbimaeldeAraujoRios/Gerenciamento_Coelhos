@@ -1,39 +1,82 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ficha do Animal</title>
-  <link rel="stylesheet" href="/front_end/css/fichas_styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Adicionar Coelho</title>
+  <link rel="stylesheet" href="/front_end/css/fichas_styles.css" />
+
+  <script>
+    function clicarbotao(){
+      window.location.href='index.html';
+    }
+  </script>
 </head>
 <body>
-  <div class="container">
-    <div class="form-box">
-      <div class="left">
-        <label>Número <input type="text" id="numero"></label>
-        <label>Raça <input type="text" id="raca"></label>
-        <label>Data Nasc <input type="text" id="dataNasc"></label>
-        <label>Peso Nasc <input type="text" id="pesoNasc"></label>
-        <label>Data Desm <input type="text" id="dataDesm"></label>
-        <label>Peso Desm <input type="text" id="pesoDesm"></label>
-        <label>Peso Atual <input type="text" id="pesoAtual"></label>
-      </div>
-      <div class="right">
-        <label>Nome <input type="text" id="nome"></label>
-        <label>Sexo <input type="text" id="sexo"></label>
-        <label>Transferido para <input type="text" id="transferido"></label>
-        <label>Matriz <input type="text" id="matriz"></label>
-        <label>Reprodutor <input type="text" id="reprodutor"></label>
-        <label>Tipo <input type="text" id="tipo"></label>
+  <form action="/coelho" method="post">
+    <div class="container">
+      <div class="form-box">
+        <div class="left">
+          <label for="numero_coelho">Número*
+            <input type="number" id="numero_coelho" name="numero_coelho" required>
+          </label>
 
-        <div class="buttons">
-          <button class="add">Adicionar</button>
-          <button class="back">Voltar</button>
+          <label for="raca_coelho">Raça*
+            <input type="text" id="raca_coelho" name="raca_coelho" maxlength="50" required>
+          </label>
+
+          <label for="data_nascimento_coelho">Data de Nascimento*
+            <input type="date" id="data_nascimento_coelho" name="data_nascimento_coelho" required>
+          </label>
+
+          <label for="peso_nascimento">Peso ao Nascer (kg)
+            <input type="text" id="peso_nascimento" name="peso_nascimento" placeholder="Ex: 0.5">
+          </label>
+
+          <label for="peso_atual">Peso Atual (kg)
+            <input type="text" id="peso_atual" name="peso_atual" placeholder="Ex: 2.3">
+          </label>
+
+          <label for="data_desmame">Data de Desmame
+            <input type="date" id="data_desmame" name="data_desmame">
+          </label>
+        </div>
+
+        <div class="right">
+          <label for="nome_coelho">Nome*
+            <input type="text" id="nome_coelho" name="nome_coelho" maxlength="50" required>
+          </label>
+
+          <label for="sexo_coelho">Sexo*
+            <input type="text" id="sexo_coelho" name="sexo_coelho" maxlength="10" required>
+          </label>
+
+          <label for="tipo_coelho">Tipo
+            <input type="text" id="tipo_coelho" name="tipo_coelho" maxlength="20">
+          </label>
+
+          <label for="matriz_coelho">Matriz
+            <input type="text" id="matriz_coelho" name="matriz_coelho">
+          </label>
+
+          <label for="reprodutor_coelho">Reprodutor
+            <input type="text" id="reprodutor_coelho" name="reprodutor_coelho">
+          </label>
+
+          <label for="observacoes_coelho">Observações
+            <textarea id="observacoes_coelho" name="observacoes_coelho" rows="3"></textarea>
+          </label>
+
+          <input type="hidden" name="id_usuario" value="<!-- ID DO USUÁRIO AQUI -->">
+
+          <div class="buttons">
+            <button type="submit" class="add">Adicionar</button>
+            <button type="button" class="back" onclick="clicarbotao()">Voltar</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-
-  <script src=></script>
+  </form>
 </body>
 </html>
+

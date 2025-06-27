@@ -4,24 +4,29 @@ const Database = require('../database');
 class CoelhoModel{
 async  insertCoelho(coelho){
   
-    const sql=(
-    "INSERT INTO coelho (numero_coelho,nome_coelho,raca_coelho,data_nascimento_coelho,sexo_coelho,observacoes_coelho,peso_nascimento,peso_atual,tipo_coelho,data_desmame,id_usuario) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) ")
-    const res = await Database.query(
-        sql,
-        [
-          coelho.numero_coelho,
-          coelho.nome_coelho,
-          coelho.raca_coelho,
-          coelho.data_nascimento_coelho,
-          coelho.sexo_coelho,
-          coelho.observacoes_coelho,
-          coelho.peso_nascimento,
-          coelho.peso_atual,
-          coelho.tipo_coelho,
-          coelho.data_desmame,
-          coelho.id_usuario
-        ]
-      );
+ const sql = (
+  "INSERT INTO coelho (numero_coelho,nome_coelho,raca_coelho,data_nascimento_coelho,sexo_coelho,observacoes_coelho,peso_nascimento,peso_atual,tipo_coelho,data_desmame,matriz_coelho,reprodutor_coelho,id_usuario) values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)"
+);
+
+const res = await Database.query(
+  sql,
+  [
+    coelho.numero_coelho,
+    coelho.nome_coelho,
+    coelho.raca_coelho,
+    coelho.data_nascimento_coelho,
+    coelho.sexo_coelho,
+    coelho.observacoes_coelho,
+    coelho.peso_nascimento,
+    coelho.peso_atual,
+    coelho.tipo_coelho,
+    coelho.data_desmame,
+    coelho.matriz_coelho,
+    coelho.reprodutor_coelho,
+    coelho.id_usuario
+  ]
+);
+
    
 }
 async  selectCoelhos(){

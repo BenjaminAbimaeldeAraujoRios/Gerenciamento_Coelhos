@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro de Coelhos</title>
-  <link rel="stylesheet" href="/front_end/css/index_styles.css">
-
+  <link rel="stylesheet" href="/front_end/css/index_styles.css" />
   <script>
-    function clicarbotao(){
-    
-    window.location.href='adicionar_coelho.html';
+    function clicarbotao() {
+      window.location.href = 'adicionar_coelho.html';
     }
-    
-    </script>
-
-
+  </script>
 </head>
 <body>
   <div class="container">
@@ -22,10 +17,12 @@
       <button class="tab active" id="matrizesTab">Matrizes</button>
       <button class="tab" id="reprodutoresTab">Reprodutores</button>
       <button class="tab" id="laparosTab">Láparos</button>
+
+
     </div>
 
     <div class="search-box">
-      <input type="text" id="searchInput" placeholder="🔍 Procurar...">
+      <input type="text" id="searchInput" placeholder="🔍 Procurar..." />
     </div>
 
     <table>
@@ -38,9 +35,7 @@
           <th>Reprodutor</th>
         </tr>
       </thead>
-      <tbody id="coelhoTableBody">
-        
-      </tbody>
+      <tbody id="coelhoTableBody"></tbody>
     </table>
 
     <div class="add-button">
@@ -48,7 +43,7 @@
     </div>
   </div>
 
-  <script src=""></script>
+  <script src="/front_end/js/index.js"></script>
 </body>
 </html>
 

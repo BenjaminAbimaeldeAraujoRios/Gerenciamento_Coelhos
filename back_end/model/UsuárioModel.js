@@ -1,4 +1,6 @@
 const Database = require('../database');
+const { pbkdf2, randomBytes } = require('node:crypto');
+
 class Usuario{
 
     async selectUsuarios(){
@@ -32,10 +34,33 @@ class Usuario{
     
         
     }
+     criarHash(senha, tempero){
+        return new Promise(done => {
+            randomBytes(8, (err, randomBytes) => {
+                const salt = tempero ?? randomBytes.toString('hex');  
+                pbkdf2(senha, salt, 100000, 16, 'sha512', async function(err, derivedKey){
+                    done({
+                        salt,
+                        hash: derivedKey.toString('hex')
+                    });  
+                });    
+            });
+        });
+    }
+    criaValorAleatorio(tamanhoEmBytes){
+        return new Promise(done => {
+            randomBytes(tamanhoEmBytes, (err, randomBytes) => {
+                done(randomBytes.toString('hex'));  
+            });
+        });
+    }
+
+
     
    
 }
 module.exports={
    Usuario,
+   
 
 };

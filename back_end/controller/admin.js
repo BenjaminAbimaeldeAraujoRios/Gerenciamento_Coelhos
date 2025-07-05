@@ -9,6 +9,8 @@ module.exports.rotas = function(app) {
     const AlunoRota=new Alunos();
     const CoelhosRota=new CoelhoModel();
 
+
+
 //Usuário
     app.get('/usuario/:id', async (req, res) => {
         const usuarios = await UsuarioRota.selectUsuarios_por_id(req.params.id);
@@ -20,10 +22,28 @@ module.exports.rotas = function(app) {
         res.json(usuarios);
     });
 
-    app.post('/usuario', async (req, res) => {
+    app.post('/usuario',async (req, res) => {
         console.log(req.body);
-        await UsuarioRota.insertUsuario(req.body);
-        res.sendStatus(201);
+        if(!req.body.nome_usuario){
+             return res.status(400).send("Faltou o nome!");
+        }
+         if(!req.body.email
+            || !/[a-z]+@[a-z\.]+\.com/.test(req.body.email)
+            || req.body.email?.length > 300)
+        return res.status(400).send("Faltou o email!!");
+
+    if(!req.body.senha || req.body.senha?.length < 8)
+        return res.status(400).send("Faltou a senha, ou ta curta. Mínimo de 8 caracteres");
+
+     const resultado =   await UsuarioRota.criarHash(req.body.senha);
+     req.body.tempero = resultado.salt;  
+     req.body.senha = resultado.hash; 
+    
+        
+     delete resultado.senha;
+       delete resultado.tempero;
+     const usuario=await UsuarioRota.insertUsuario(req.body);
+        res.status(201).json(usuario);
     });
 
     app.patch('/usuario/:id', async (req, res) => {

@@ -1,10 +1,11 @@
 let todosOsCoelhos = [];
 let tipoAtual = 'Matriz';
-
+const apiurl="http://localhost:3000"
 document.addEventListener('DOMContentLoaded', () => {
-  fetch('/coelhos')
+  fetch(apiurl+'/coelhos')
     .then(res => res.json())
     .then(data => {
+      console.log(data)
       todosOsCoelhos = data;
       filtrarPorTipo(tipoAtual);
     })
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('laparosTab').addEventListener('click', () => {
     ativarBotao('laparosTab');
-    tipoAtual = 'Láparo';
+    tipoAtual = 'Laparo';
     filtrarPorTipo(tipoAtual);
   });
 
@@ -65,7 +66,8 @@ function filtrarPorTipo(tipo) {
       `;
       tr.style.cursor = 'pointer';
       tr.addEventListener('click', () => {
-        window.location.href = `ficha_coelho.html?id=${coelho.id}`;
+        window.location.href = `ficha.html?id=${coelho.id_coelho}`;
+        
       });
       tbody.appendChild(tr);
     }

@@ -12,7 +12,7 @@ Database.conectar(
 
 
 app.use(express.json());
-
+app.use("/front_end", express.static("front_end"))
 rotas(app);
 
 app.listen(3000, () => {

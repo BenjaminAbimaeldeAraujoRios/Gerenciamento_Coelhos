@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Adicionar Coelho</title>
-  <link rel="stylesheet" href="/front_end/css/fichas_styles.css" />
+  <link rel="stylesheet" href="/front/css/fichas_styles.css" />
 
   <script>
     function clicarbotao(){
@@ -67,16 +67,17 @@
             <textarea id="observacoes_coelho" name="observacoes_coelho" rows="3"></textarea>
           </label>
 
-          <input type="hidden" name="id_usuario" value="<!-- ID DO USUÁRIO AQUI -->">
+          <input type="hidden" name="id_usuario" value="1">
 
           <div class="buttons">
-            <button type="submit" class="add">Adicionar</button>
-            <button type="button" class="back" onclick="clicarbotao()">Voltar</button>
+            <button type="post"   class="add"    onclick="adicionarcoelho()">Adicionar</button>
+            <button type="button" class="back"   onclick="adicionarcoelho()">Voltar</button>
           </div>
         </div>
       </div>
     </div>
   </form>
+ <script src="/front/js/Adicionar_coelho.js"></script>
 </body>
 </html>
 

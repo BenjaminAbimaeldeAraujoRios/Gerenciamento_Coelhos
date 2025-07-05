@@ -14,7 +14,7 @@ window.onload = async () => {
 
     const data = await res.json();
     const coelho = Array.isArray(data) ? data[0] : data;
-    console.log("Coelho:", coelho); // 👈 veja os dados aqui
+    console.log("Coelho:", coelho);
 
     document.getElementById("numero_coelho").value = coelho.numero_coelho || "";
     document.getElementById("raca_coelho").value = coelho.raca_coelho || "";
@@ -35,7 +35,8 @@ window.onload = async () => {
   }
 };
 
-document.querySelector(".delete").onclick = async () => {
+
+async function deletarCoelho() {
   if (!confirm("Deseja realmente excluir esta ficha?")) return;
 
   try {
@@ -45,7 +46,7 @@ document.querySelector(".delete").onclick = async () => {
 
     if (res.ok) {
       alert("Coelho deletado com sucesso!");
-      window.location.href='index.html';
+      window.location.href = 'index.html';
     } else {
       alert("Erro ao deletar coelho.");
     }
@@ -53,4 +54,4 @@ document.querySelector(".delete").onclick = async () => {
     alert("Erro ao conectar com o servidor.");
     console.error(err);
   }
-};
+}

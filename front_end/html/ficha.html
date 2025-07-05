@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Ficha do Coelho</title>
   <link rel="stylesheet" href="/front_end/css/fichas_styles.css" />
+
+  <script>
+    function clicarbotao(){
+      window.location.href='index.html';
+    }
+  </script>
+
 </head>
 <body>
   <div class="container">
@@ -63,8 +70,8 @@
         <input type="hidden" id="id_usuario" name="id_usuario">
 
         <div class="buttons">
-          <button class="delete" type="button">Deletar</button>
-          <button class="back" type="button" onclick="window.history.back()">Voltar</button>
+          <button class="delete" type="button" onclick="deletarCoelho()">Deletar</button>
+          <button class="back" type="button"   onclick="clicarbotao()">Voltar</button>
         </div>
       </div>
     </div>

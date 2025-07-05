@@ -1,19 +1,37 @@
-async function adicionarcoelho(novapessoa){
+async function adicionarCoelho() {
+  const novoCoelho = {
+    numero_coelho: document.getElementById('numero_coelho').value,
+    raca_coelho: document.getElementById('raca_coelho').value,
+    data_nascimento_coelho: document.getElementById('data_nascimento_coelho').value,
+    peso_nascimento: document.getElementById('peso_nascimento').value,
+    peso_atual: document.getElementById('peso_atual').value,
+    data_desmame: document.getElementById('data_desmame').value,
+    nome_coelho: document.getElementById('nome_coelho').value,
+    sexo_coelho: document.getElementById('sexo_coelho').value,
+    tipo_coelho: document.getElementById('tipo_coelho').value,
+    matriz_coelho: document.getElementById('matriz_coelho').value,
+    reprodutor_coelho: document.getElementById('reprodutor_coelho').value,
+    observacoes_coelho: document.getElementById('observacoes_coelho').value,
+    id_usuario: 1
+  };
 
-const res = await fetch("/coelho",{
-method: 'POST',
-credentials: 'include',
-mode: 'cor',
-headers:{
-'content-Type': "application/json"
-   }
- body: JSON.stringfy(adicionarcoelho)
+  try {
+    const res = await fetch('/coelho', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(novoCoelho)
+    });
 
-});
-
-alert("Coelho Adicionado com sucesso!");
-pessoas= null;
-pagina = 'inicio';
-
+    if (res.ok) {
+      alert('Coelho adicionado com sucesso!');
+      window.location.href = 'index.html';
+    } else {
+      alert('Erro ao adicionar coelho.');
+    }
+  } catch (err) {
+    alert('Erro ao conectar com o servidor.');
+    console.error(err);
+  }
 }
-ev.preventDefault();

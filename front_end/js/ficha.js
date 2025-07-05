@@ -1,4 +1,4 @@
-const apiurl="http://localhost:3000"
+const apiurl = "http://localhost:3000";
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
@@ -7,13 +7,15 @@ if (!id) {
   window.history.back();
 }
 
-
 window.onload = async () => {
   try {
-    const res = await fetch(`/coelho/${id}`);
-    const coelho = await res.json();
+    const res = await fetch(`${apiurl}/coelho/${id}`);
+    if (!res.ok) throw new Error("Erro ao buscar coelho: " + res.status);
 
-    
+    const data = await res.json();
+    const coelho = Array.isArray(data) ? data[0] : data;
+    console.log("Coelho:", coelho); // 👈 veja os dados aqui
+
     document.getElementById("numero_coelho").value = coelho.numero_coelho || "";
     document.getElementById("raca_coelho").value = coelho.raca_coelho || "";
     document.getElementById("data_nascimento_coelho").value = coelho.data_nascimento_coelho?.slice(0, 10) || "";
@@ -33,18 +35,17 @@ window.onload = async () => {
   }
 };
 
-
 document.querySelector(".delete").onclick = async () => {
   if (!confirm("Deseja realmente excluir esta ficha?")) return;
 
   try {
-    const res = await fetch(`/coelho/${id}`, {
+    const res = await fetch(`${apiurl}/coelho/${id}`, {
       method: "DELETE"
     });
 
     if (res.ok) {
       alert("Coelho deletado com sucesso!");
-      window.location.href = "/coelhos"; 
+      window.location.href='index.html';
     } else {
       alert("Erro ao deletar coelho.");
     }

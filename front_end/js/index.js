@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('laparosTab').addEventListener('click', () => {
     ativarBotao('laparosTab');
-    tipoAtual = 'Laparo';
+    tipoAtual = 'Láparo';
     filtrarPorTipo(tipoAtual);
   });
 

@@ -47,25 +47,28 @@ async excluirCoelho(id){
 
    
 }
-async  updateCoelho(id,coelho){
-   
-    const sql=("UPDATE  coelho set  nome_coelho=$1,raca_coelho=$2,data_nascimento_coelho=$3,sexo_coelho=$4,observacoes_coelho=$5,peso_nascimento=$6,peso_atual=$7,tipo_coelho=$8,data_desmame=$9 where id_coelho=$10")//mesmo nome os atributos do db
-    const res= await Database.query(sql,[
-        coelho.nome_coelho,
-        coelho.raca_coelho,
-        coelho.data_nascimento_coelho,
-        coelho.sexo_coelho,
-        coelho.observacoes_coelho,
-        coelho.peso_nascimento,
-        coelho.peso_atual,
-        coelho.tipo_coelho,
-        coelho.data_desmame,
-        id ]);
+async updateCoelho(id, coelho) {
+    const sql = (
+      "UPDATE coelho SET nome_coelho=$1, raca_coelho=$2, data_nascimento_coelho=$3, sexo_coelho=$4, observacoes_coelho=$5, peso_nascimento=$6, peso_atual=$7, tipo_coelho=$8, data_desmame=$9, matriz_coelho=$10, reprodutor_coelho=$11 WHERE id_coelho=$12"
+    );
+
+    const res = await Database.query(sql, [
+      coelho.nome_coelho,
+      coelho.raca_coelho,
+      coelho.data_nascimento_coelho,
+      coelho.sexo_coelho,
+      coelho.observacoes_coelho,
+      coelho.peso_nascimento,
+      coelho.peso_atual,
+      coelho.tipo_coelho,
+      coelho.data_desmame,
+      coelho.matriz_coelho,
+      coelho.reprodutor_coelho,
+      id
+    ]);
+  }
 }
 
-
-    
-}
-module.exports={
-    CoelhoModel,
+module.exports = {
+  CoelhoModel,
 };

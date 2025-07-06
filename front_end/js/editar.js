@@ -16,6 +16,7 @@ window.onload = async () => {
     const coelho = Array.isArray(data) ? data[0] : data;
     console.log("Coelho:", coelho);
 
+    // Preencher campos com dados atuais
     document.getElementById("numero_coelho").value = coelho.numero_coelho || "";
     document.getElementById("raca_coelho").value = coelho.raca_coelho || "";
     document.getElementById("data_nascimento_coelho").value = coelho.data_nascimento_coelho?.slice(0, 10) || "";
@@ -35,23 +36,39 @@ window.onload = async () => {
   }
 };
 
-
-async function deletarcoelho() {
-  if (!confirm("Deseja realmente excluir esta ficha?")) return;
+async function salvaralteracao() {
+  const coelhoAtualizado = {
+    numero_coelho: document.getElementById("numero_coelho").value,
+    raca_coelho: document.getElementById("raca_coelho").value,
+    data_nascimento_coelho: document.getElementById("data_nascimento_coelho").value,
+    peso_nascimento: document.getElementById("peso_nascimento").value,
+    data_desmame: document.getElementById("data_desmame").value,
+    peso_atual: document.getElementById("peso_atual").value,
+    nome_coelho: document.getElementById("nome_coelho").value,
+    sexo_coelho: document.getElementById("sexo_coelho").value,
+    tipo_coelho: document.getElementById("tipo_coelho").value,
+    matriz_coelho: document.getElementById("matriz_coelho").value,
+    reprodutor_coelho: document.getElementById("reprodutor_coelho").value,
+    observacoes_coelho: document.getElementById("observacoes_coelho").value,
+  };
 
   try {
     const res = await fetch(`${apiurl}/coelho/${id}`, {
-      method: "DELETE"
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(coelhoAtualizado)
     });
 
-    if (res.ok) {
-      alert("Coelho deletado com sucesso!");
-      window.location.href = 'index.html';
-    } else {
-      alert("Erro ao deletar coelho.");
-    }
+    if (!res.ok) throw new Error('Erro ao salvar alterações: ' + res.status);
+
+    alert('Alterações salvas com sucesso!');
+    // Redireciona para a ficha do coelho atual
+    window.location.href = `ficha.html?id=${id}`;
+    
   } catch (err) {
-    alert("Erro ao conectar com o servidor.");
+    alert('Falha ao salvar alterações.');
     console.error(err);
   }
 }

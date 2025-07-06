@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Erro ao carregar coelhos:', err);
     });
 
+
+
+
+    
   function ativarBotao(id) {
     document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
     const btn = document.getElementById(id);
@@ -42,6 +46,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+
+
+
 function filtrarPorTipo(tipo) {
   const tbody = document.getElementById('coelhoTableBody');
   const busca = document.getElementById('searchInput').value.toLowerCase();
@@ -64,12 +71,19 @@ function filtrarPorTipo(tipo) {
         <td>${coelho.matriz_coelho || '-'}</td>
         <td>${coelho.reprodutor_coelho || '-'}</td>
       `;
-      tr.style.cursor = 'pointer';
-      tr.addEventListener('click', () => {
-        window.location.href = `ficha.html?id=${coelho.id_coelho}`;
-        
-      });
+      selecionarcoelho(tr, coelho.id_coelho);
       tbody.appendChild(tr);
     }
+  });
+}
+
+
+
+
+
+function selecionarcoelho(tr, idCoelho) {
+  tr.style.cursor = 'pointer';
+  tr.addEventListener('click', () => {
+    window.location.href = `ficha.html?id=${idCoelho}`;
   });
 }

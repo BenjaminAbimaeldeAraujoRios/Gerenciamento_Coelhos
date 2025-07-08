@@ -36,9 +36,9 @@ class Usuario{
     }
      async login(email){
     
-        const sql=('Select tempero from usuario where email=$1 ');
+        const sql=('Select * from usuario where email=$1 ');
         const res= await Database.query(sql,[email]);
-      return res[0];//Procura o usuário atraves do email para achar o   artributo  tempero(salt) da tabela usuário.
+      return res[0];
         
     }
    

@@ -23,7 +23,7 @@ module.exports.rotas = function(app) {
         const usuarios = await UsuarioRota.selectUsuarios();  
         res.json(usuarios);
     });
-  app.post('/login', async (req, res) => {
+ app.post('/login', async (req, res) => {
     const { email, senha } = req.body;
 
     if (!email || !senha) {
@@ -36,16 +36,21 @@ module.exports.rotas = function(app) {
         return res.status(404).send("Usuário não encontrado.");
     }
 
+   
     const resultado = await UsuarioRota.criarHash(senha, usuario.tempero);
 
-    if (resultado.salt !== usuario.tempero) {
+  
+
+    if (resultado.hash !== usuario.senha) {
         return res.status(401).send("Senha incorreta.");
     }
 
-    
+    delete usuario.senha;
+    delete usuario.tempero;
 
-    res.status(200).json({ mensagem: "Login realizado com sucesso"});
+    res.status(200).json({ mensagem: "Login realizado com sucesso", usuario });
 });
+
 
 
     app.post('/usuario',async (req, res) => {

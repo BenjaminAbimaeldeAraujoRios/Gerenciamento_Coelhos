@@ -23,47 +23,55 @@ module.exports.rotas = function(app) {
         const usuarios = await UsuarioRota.selectUsuarios();  
         res.json(usuarios);
     });
-     app.get('/login', async (req, res) => {
-         if (!req.body.email || !req.body.senha) {
-            return res.status(400).send("Email e senha são obrigatórios.");
-        }
-      const  usuario= UsuarioRota.verificarSenha(req.body.email);
-       const senhaBanco= await UsuarioRota.login(req.body.email ,req.usuario.body.senha);
+  app.post('/login', async (req, res) => {
+    const { email, senha } = req.body;
 
-         if(!senhaBanco){
-           return res.status(200).send("Login feito com sucesso.");
-         }
-         else{
-           return res.status(400).send("Senha errada."); 
-         }
-       
-          
-       
+    if (!email || !senha) {
+        return res.status(400).send("Email e senha são obrigatórios.");
+    }
+
+    const usuario = await UsuarioRota.login(email);
+
+    if (!usuario) {
+        return res.status(404).send("Usuário não encontrado.");
+    }
+
+    const resultado = await UsuarioRota.criarHash(senha, usuario.tempero);
+
+    if (resultado.salt !== usuario.tempero) {
+        return res.status(401).send("Senha incorreta.");
+    }
+
     
-    });
+
+    res.status(200).json({ mensagem: "Login realizado com sucesso"});
+});
 
 
     app.post('/usuario',async (req, res) => {
-        console.log(req.body);
+         const { nome_usuario, email, senha } = req.body;
         if(!req.body.nome_usuario){
              return res.status(400).send("Faltou o nome!");
         }
          if(!req.body.email
-            || !/[a-z]+@[a-z\.]+\.com/.test(req.body.email)
+            || !/[a-z]+@[a-z\.]+\.com/.test(email)
             || req.body.email?.length > 300)
         return res.status(400).send("Faltou o email!!");
 
     if(!req.body.senha || req.body.senha?.length < 8)
         return res.status(400).send("Faltou a senha, ou ta curta. Mínimo de 8 caracteres");
 
-     const resultado =   await UsuarioRota.criarHash(req.body.senha);
-     req.body.tempero = resultado.salt;  
-     req.body.senha = resultado.hash; 
+     const resultado =   await UsuarioRota.criarHash(senha);
+    const novoUsuario = {
+        nome_usuario,
+        email,
+        senha: resultado.hash,
+        tempero: resultado.salt
+    };
     
         
-     delete resultado.senha;
-       delete resultado.tempero;
-     const usuario=await UsuarioRota.insertUsuario(req.body);
+    
+     const usuario=await UsuarioRota.insertUsuario(novoUsuario);
         res.status(201).json(usuario);
     });
 

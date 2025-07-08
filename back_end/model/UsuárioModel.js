@@ -16,8 +16,8 @@ class Usuario{
     }
    async insertUsuario(usuario){
         
-        const sql=("INSERT INTO usuario (nome_usuario,email,senha)values($1,$2,$3) ")
-        const res= await Database.query(sql,[usuario.nome_usuario,usuario.email,usuario.senha]);
+        const sql=("INSERT INTO usuario (nome_usuario,email,senha,tempero)values($1,$2,$3,$4) ")
+        const res= await Database.query(sql,[usuario.nome_usuario,usuario.email,usuario.senha,usuario.tempero]);
         
     }
      async updateUsuario(id,usuario){
@@ -34,11 +34,11 @@ class Usuario{
     
         
     }
-     async login(usuario){
+     async login(email){
     
-        const sql=('Select email,senha from usuario where email=$1 and senha=$2');
-        const res= await Database.query(sql,[usuario.email,usuario.senha]);
-      return res;
+        const sql=('Select tempero from usuario where email=$1 ');
+        const res= await Database.query(sql,[email]);
+      return res[0];//Procura o usuário atraves do email para achar o   artributo  tempero(salt) da tabela usuário.
         
     }
    

@@ -14,7 +14,6 @@ window.onload = async () => {
 
     const data = await res.json();
     const coelho = Array.isArray(data) ? data[0] : data;
-    console.log("Coelho:", coelho);
 
     document.getElementById("numero_coelho").value = coelho.numero_coelho || "";
     document.getElementById("raca_coelho").value = coelho.raca_coelho || "";
@@ -29,47 +28,21 @@ window.onload = async () => {
     document.getElementById("reprodutor_coelho").value = coelho.reprodutor_coelho || "";
     document.getElementById("observacoes_coelho").value = coelho.observacoes_coelho || "";
 
+    esconderbotaolaparo();
+
   } catch (err) {
     alert("Erro ao carregar dados do coelho.");
     console.error(err);
   }
 };
 
+function esconderbotaolaparo() {
+  const tipo = document.getElementById("tipo_coelho")?.value;
 
-async function deletarcoelho() {
-  if (!confirm("Deseja realmente excluir esta ficha?")) return;
-
-  try {
-    const res = await fetch(`${apiurl}/coelho/${id}`, {
-      method: "DELETE"
-    });
-
-    if (res.ok) {
-      alert("Coelho deletado com sucesso!");
-      window.location.href = 'index.html';
-    } else {
-      alert("Erro ao deletar coelho.");
+  if (tipo && tipo.toLowerCase() === "láparo") {
+    const botao = document.getElementById("botaocruzas");
+    if (botao) {
+      botao.style.display = "none";
     }
-  } catch (err) {
-    alert("Erro ao conectar com o servidor.");
-    console.error(err);
   }
 }
-
-
-function esconderbotaolaparo() {
-      const tipo = document.getElementById("tipo_coelho")?.value;
-
-      if (tipo === "Láparo") {
-        const botao = document.getElementById("botaocruzas");
-        if (botao) {
-          botao.style.display = "none";
-        }
-      }
-    }
-
-
-
-
-
-esconderbotaolaparo();

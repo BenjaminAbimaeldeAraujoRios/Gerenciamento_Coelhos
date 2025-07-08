@@ -19,15 +19,15 @@
     <div class="container">
       <div class="form-box">
         <div class="left">
-          <label for="numero_coelho">Número*
-            <input type="text" id="numero_coelho" name="numero_coelho" required>
+          <label for="numero_coelho">Número
+            <input type="number" id="numero_coelho" name="numero_coelho" required>
           </label>
 
-          <label for="raca_coelho">Raça*
+          <label for="raca_coelho">Raça
             <input type="text" id="raca_coelho" name="raca_coelho" maxlength="50" required>
           </label>
 
-          <label for="data_nascimento_coelho">Data de Nascimento*
+          <label for="data_nascimento_coelho">Data de Nascimento
             <input type="date" id="data_nascimento_coelho" name="data_nascimento_coelho" required>
           </label>
 
@@ -45,24 +45,31 @@
         </div>
 
         <div class="right">
-          <label for="nome_coelho">Nome*
+          <label for="nome_coelho">Nome
             <input type="text" id="nome_coelho" name="nome_coelho" maxlength="50" required>
           </label>
 
-          <label for="sexo_coelho">Sexo*
-            <input type="text" id="sexo_coelho" name="sexo_coelho" maxlength="10" required>
-          </label>
+          <label for="sexo_coelho">Sexo
+          <select id="sexo_coelho" name="sexo_coelho" required>
+          <option value="Macho">Macho</option>
+          <option value="Fêmea">Fêmea</option>
+         </select>
+         </label>
 
-          <label for="tipo_coelho">Tipo
-            <input type="text" id="tipo_coelho" name="tipo_coelho" maxlength="20">
-          </label>
+         <label for="tipo_coelho">Tipo
+         <select id="tipo_coelho" name="tipo_coelho" required>
+         <option value="Matriz">Matriz</option>
+         <option value="Reprodutor">Reprodutor</option>
+         <option value="Láparo">Láparo</option>
+         </select>
+         </label>
 
-          <label for="matriz_coelho">Matriz
-            <input type="text" id="matriz_coelho" name="matriz_coelho">
+          <label for="matriz_coelho" >Matriz
+            <input type="number" id="matriz_coelho" name="matriz_coelho" required>
           </label>
 
           <label for="reprodutor_coelho">Reprodutor
-            <input type="text" id="reprodutor_coelho" name="reprodutor_coelho">
+            <input type="number" id="reprodutor_coelho" name="reprodutor_coelho" required>
           </label>
 
           <label for="observacoes_coelho">Observações

@@ -20,6 +20,7 @@
 
   </script>
 </head>
+
 <body>
   <div class="container">
     <div class="form-box">
@@ -55,20 +56,27 @@
         </label>
 
         <label for="sexo_coelho">Sexo
-          <input type="text" id="sexo_coelho" name="sexo_coelho">
-        </label>
+          <select id="sexo_coelho" name="sexo_coelho" required>
+          <option value="Macho">Macho</option>
+          <option value="Fêmea">Fêmea</option>
+         </select>
+         </label>
 
-        <label for="tipo_coelho">Tipo
-          <input type="text" id="tipo_coelho" name="tipo_coelho">
-        </label>
+         <label for="tipo_coelho">Tipo
+         <select id="tipo_coelho" name="tipo_coelho" required>
+         <option value="Matriz">Matriz</option>
+         <option value="Reprodutor">Reprodutor</option>
+         <option value="Láparo">Láparo</option>
+         </select>
+         </label>
 
         <label for="matriz_coelho">Matriz
-          <input type="text" id="matriz_coelho" name="matriz_coelho">
-        </label>
+            <input type="number" id="matriz_coelho" name="matriz_coelho">
+          </label>
 
-        <label for="reprodutor_coelho">Reprodutor
-          <input type="text" id="reprodutor_coelho" name="reprodutor_coelho">
-        </label>
+          <label for="reprodutor_coelho">Reprodutor
+            <input type="number" id="reprodutor_coelho" name="reprodutor_coelho">
+          </label>
 
         <label for="observacoes_coelho">Observações
           <textarea id="observacoes_coelho" name="observacoes_coelho" rows="4"></textarea>
@@ -78,6 +86,7 @@
 
         <div class="buttons">
           <button class="delete" type="button" onclick="salvaralteracao()">Salvar</button>
+          <button class="delete" type="button" onclick="deletarcoelho()">Deletar</button>
           <button class="back" type="button" onclick="voltarficha()">Cancelar</button>
         </div>
       </div>

@@ -16,7 +16,7 @@ window.onload = async () => {
     const coelho = Array.isArray(data) ? data[0] : data;
     console.log("Coelho:", coelho);
 
-    // Preencher campos com dados atuais
+    
     document.getElementById("numero_coelho").value = coelho.numero_coelho || "";
     document.getElementById("raca_coelho").value = coelho.raca_coelho || "";
     document.getElementById("data_nascimento_coelho").value = coelho.data_nascimento_coelho?.slice(0, 10) || "";
@@ -64,11 +64,32 @@ async function salvaralteracao() {
     if (!res.ok) throw new Error('Erro ao salvar alterações: ' + res.status);
 
     alert('Alterações salvas com sucesso!');
-    // Redireciona para a ficha do coelho atual
+
     window.location.href = `ficha.html?id=${id}`;
     
   } catch (err) {
     alert('Falha ao salvar alterações.');
+    console.error(err);
+  }
+}
+
+
+async function deletarcoelho() {
+  if (!confirm("Deseja realmente excluir esta ficha?")) return;
+
+  try {
+    const res = await fetch(`${apiurl}/coelho/${id}`, {
+      method: "DELETE"
+    });
+
+    if (res.ok) {
+      alert("Coelho deletado com sucesso!");
+      window.location.href = 'index.html';
+    } else {
+      alert("Erro ao deletar coelho.");
+    }
+  } catch (err) {
+    alert("Erro ao conectar com o servidor.");
     console.error(err);
   }
 }

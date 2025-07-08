@@ -55,3 +55,21 @@ async function deletarcoelho() {
     console.error(err);
   }
 }
+
+
+function esconderbotaolaparo() {
+      const tipo = document.getElementById("tipo_coelho")?.value;
+
+      if (tipo === "Láparo") {
+        const botao = document.getElementById("botaocruzas");
+        if (botao) {
+          botao.style.display = "none";
+        }
+      }
+    }
+
+
+
+
+
+esconderbotaolaparo();

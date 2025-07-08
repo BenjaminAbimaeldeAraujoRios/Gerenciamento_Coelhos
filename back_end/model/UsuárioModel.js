@@ -1,5 +1,5 @@
 const Database = require('../database');
-const { pbkdf2, randomBytes } = require('node:crypto');
+const { pbkdf2, randomBytes} = require('node:crypto');
 
 class Usuario{
 
@@ -34,6 +34,17 @@ class Usuario{
     
         
     }
+     async login(usuario){
+    
+        const sql=('Select email,senha from usuario where email=$1 and senha=$2');
+        const res= await Database.query(sql,[usuario.email,usuario.senha]);
+      return res;
+        
+    }
+   
+
+   
+
      criarHash(senha, tempero){
         return new Promise(done => {
             randomBytes(8, (err, randomBytes) => {
@@ -47,13 +58,12 @@ class Usuario{
             });
         });
     }
-    criaValorAleatorio(tamanhoEmBytes){
-        return new Promise(done => {
-            randomBytes(tamanhoEmBytes, (err, randomBytes) => {
-                done(randomBytes.toString('hex'));  
-            });
-        });
-    }
+
+
+          
+    
+
+   
 
 
     

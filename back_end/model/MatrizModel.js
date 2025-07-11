@@ -1,31 +1,71 @@
 const Database = require('../database');
 
 class Matriz {
-    async adicionarMatriz(matriz) {
-        const sql = `
-            INSERT INTO matriz (
-                data_parto, laparos, laparos_mortos, laparos_transferidos, 
-                peso_total_ninhada, id_controle
-            ) VALUES ($1, $2, $3, $4, $5, $6)
-        `;
-        await Database.query(sql, [
-            matriz.data_parto,
-            matriz.laparos,
-            matriz.laparos_mortos,
-            matriz.laparos_transferidos,
-            matriz.peso_total_ninhada,
-            matriz.id_controle
-        ]);
-    }
+  async adicionarMatriz(matriz) {
+    const sql = `
+      INSERT INTO matriz (
+        data_parto,
+        laparos,
+        laparos_mortos,
+        laparos_transferidos,
+        peso_total_ninhada,
+        id_controle
+      ) VALUES ($1, $2, $3, $4, $5, $6)
+    `;
+    const res = await Database.query(sql, [
+      matriz.data_parto,
+      matriz.laparos,
+      matriz.laparos_mortos,
+      matriz.laparos_transferidos,
+      matriz.peso_total_ninhada,
+      matriz.id_controle
+    ]);
+    return res;
+  }
 
-    async listarMatrizes() {
-        const res = await Database.query("SELECT * FROM matriz");
-        return res.rows;
-    }
+  async listarMatrizes() {
+    const res = await Database.query("SELECT * FROM matriz");
+    return res;
+  }
 
-    async excluirMatriz(id) {
-        await Database.query("DELETE FROM matriz WHERE id_matriz = $1", [id]);
-    }
+  async selecionarMatrizPorId(id) {
+    const sql = "SELECT * FROM matriz WHERE id_matriz = $1";
+    const res = await Database.query(sql, [id]);
+    return res;
+  }
+
+  async atualizarMatriz(id, matriz) {
+    const sql = `
+      UPDATE matriz SET
+        data_parto = $1,
+        laparos = $2,
+        laparos_mortos = $3,
+        laparos_transferidos = $4,
+        peso_total_ninhada = $5,
+        id_controle = $6
+      WHERE id_matriz = $7
+    `;
+    const res = await Database.query(sql, [
+      matriz.data_parto,
+      matriz.laparos,
+      matriz.laparos_mortos,
+      matriz.laparos_transferidos,
+      matriz.peso_total_ninhada,
+      matriz.id_controle,
+      id
+    ]);
+    return res;
+  }
+
+  async excluirMatriz(id) {
+    const sql = "DELETE FROM matriz WHERE id_matriz = $1";
+    const res = await Database.query(sql, [id]);
+    return res;
+  }
 }
 
-module.exports = new Matriz();
+module.exports = {
+  Matriz
+};
+
+

@@ -3,12 +3,12 @@ const Database = require('../database');
 class Cruzamento {
     async adicionarCruzamento(cruzamento) {
         const sql = `
-            INSERT INTO cruzamento (id_coelho, coelho_matriz, reprodutor_coelho)
+            INSERT INTO cruzamento (id_coelho, matriz_coelho, reprodutor_coelho)
             VALUES ($1, $2, $3)
         `;
         await Database.query(sql, [
             cruzamento.id_coelho,
-            cruzamento.coelho_matriz,
+            cruzamento.matriz_coelho,
             cruzamento.reprodutor_coelho
         ]);
     }
@@ -31,12 +31,12 @@ class Cruzamento {
     async updateCruzamento(cruzamento, id) {
         const sql = `
             UPDATE cruzamento 
-            SET id_coelho = $1, coelho_matriz = $2, reprodutor_coelho = $3 
+            SET id_coelho = $1, matriz_coelho, = $2, reprodutor_coelho = $3 
             WHERE id_controle = $4
         `;
         await Database.query(sql, [
             cruzamento.id_coelho,
-            cruzamento.coelho_matriz,
+            cruzamento.matriz_coelho,,
             cruzamento.reprodutor_coelho,
             id
         ]);

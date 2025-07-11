@@ -3,6 +3,8 @@ const{Professor}=require("../model/ProfessorModel");
 const{Alunos}=require("../model/AlunoModel");
 const{CoelhoModel}=require("../model/CoelhoModel");
 const{Cruzamento}=require("../model/CruzamentoModel");
+const Matriz = require('./model/Matriz');
+const Reprodutor = require('./model/Reprodutor');
 
 module.exports.rotas = function(app) {
     const UsuarioRota = new Usuario();//Instância a classe Usuario para usar as funções da mesma
@@ -140,9 +142,34 @@ app.patch('/cruzamento/:id', async (require, response) => {
     await CruzamentoRota.updateCruzamento(require.body, require.params.id);
     response.sendStatus(200);
 });
+//Matriz
+    app.post('/matriz', async (req, res) => {
+        await Matriz.adicionarMatriz(req.body);
+        res.sendStatus(201);
+    });
 
+    app.get('/matriz', async (req, res) => {
+        const matrizes = await Matriz.listarMatrizes();
+        res.json(matrizes);
+    });
 
+    app.delete('/matriz/:id', async (req, res) => {
+        await Matriz.excluirMatriz(req.params.id);
+        res.sendStatus(204);
+    });
+//Reprodutor
+    app.post('/reprodutor', async (req, res) => {
+        await Reprodutor.adicionarReprodutor(req.body);
+        res.sendStatus(201);
+    });
 
+    app.get('/reprodutor', async (req, res) => {
+        const reprodutores = await Reprodutor.listarReprodutores();
+        res.json(reprodutores);
+    });
 
+    app.delete('/reprodutor/:id', async (req, res) => {
+        await Reprodutor.excluirReprodutor(req.params.id);
+        res.sendStatus(204);
+    });
 };
-

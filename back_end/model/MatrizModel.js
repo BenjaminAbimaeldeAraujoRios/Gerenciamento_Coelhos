@@ -65,7 +65,7 @@ class Matriz {
 }
 
 module.exports = {
-  Matriz
+  Matriz,
 };
 
 

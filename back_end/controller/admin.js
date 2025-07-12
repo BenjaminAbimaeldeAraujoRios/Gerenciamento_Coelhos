@@ -3,15 +3,18 @@ const{Professor}=require("../model/ProfessorModel");
 const{Alunos}=require("../model/AlunoModel");
 const{CoelhoModel}=require("../model/CoelhoModel");
 const{Cruzamento}=require("../model/CruzamentoModel");
-const Matriz = require('./model/Matriz');
-const Reprodutor = require('./model/Reprodutor');
+const {Matriz}= require('../model/MatrizModel');
+const {Reprodutor} = require('../model/ReprodutorModel');
+
 
 module.exports.rotas = function(app) {
     const UsuarioRota = new Usuario();//Instância a classe Usuario para usar as funções da mesma
     const ProfessorRota=new Professor();
     const AlunoRota=new Alunos();
     const CoelhosRota=new CoelhoModel();
-    const CruzamentoRota= new Cruzamento();
+   const MatrizRota=new Matriz();
+   const CruzamentoRota=new Cruzamento();
+   const ReprodutorRota= new Reprodutor();
 
 
 
@@ -50,6 +53,31 @@ module.exports.rotas = function(app) {
 
 
     res.status(200).json({ mensagem: "Login realizado com sucesso", usuario });
+});
+app.post('/alterarSenha', async (req, res) => {
+    const { email, senha } = req.body;
+
+    if (!email || !senha) {
+        return res.status(400).send("Email e senha são obrigatórios.");
+    }
+
+    const usuario = await UsuarioRota.login(email);
+
+    if (!usuario) {
+        return res.status(404).send("Usuário não encontrado.");
+    }
+
+    console.log("Senha digitada"+senha);
+    const resultado = await UsuarioRota.criarHash(senha);
+     console.log(usuario.id_usuario);
+    console.log(resultado.salt);
+    console.log(resultado.hash);
+    const nova_senha =await UsuarioRota.alterar_senha_tempero(resultado.hash,resultado.salt,usuario.id_usuario);
+    if(!nova_senha){
+     return res.status(404).send("Erro na alteração de senha.");
+    }
+
+    res.status(200).json({ mensagem: "Alteração de senha realizada com sucesso!!", usuario });
 });
 
 

@@ -41,6 +41,11 @@ class Usuario{
       return res[0];
         
     }
+    async alterar_senha_tempero(hash,tempero,id){
+        const sql=('Update usuario  set  senha=$1,tempero=$2 where id_usuario=$3');
+        const res=await Database.query(sql,[hash,tempero,id]);
+        return res;
+    }
    
 
    

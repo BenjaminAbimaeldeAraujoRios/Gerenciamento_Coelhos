@@ -43,4 +43,6 @@ class Cruzamento {
     }
 }
 
-module.exports = new Cruzamento();
+module.exports = {
+  Cruzamento,
+};

@@ -26,6 +26,7 @@ class Matriz {
   }
 
   async listarMatrizes() {
+  try {
     const sql = `
       SELECT 
         m.*,
@@ -38,8 +39,14 @@ class Matriz {
       JOIN coelho pai ON c.reprodutor_coelho = pai.id_coelho
     `;
     const res = await Database.query(sql);
+    console.log('>> Resultado da query listarMatrizes:', res.rows);
     return res.rows;
+  } catch (error) {
+    console.error('Erro no listarMatrizes:', error);
+    throw error;
   }
+}
+
 
   async selecionarMatrizPorId(id) {
     const sql = `

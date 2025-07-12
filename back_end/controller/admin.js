@@ -13,113 +13,106 @@ module.exports.rotas = function(app) {
   const CoelhosRota = new CoelhoModel();
   const CruzamentoRota = new Cruzamento();
   const MatrizRota = new Matriz();
-  const ReprodutorRota = new Reprodutor()
+  const ReprodutorRota = new Reprodutor();
 
+  // Usuário
+  app.get('/usuario/:id', async (req, res) => {
+    const usuarios = await UsuarioRota.selectUsuarios_por_id(req.params.id);
+    res.json(usuarios);
+  });
 
+  app.get('/usuarios', async (req, res) => {
+    const usuarios = await UsuarioRota.selectUsuarios();  
+    res.json(usuarios);
+  });
 
-//Usuário
-    app.get('/usuario/:id', async (req, res) => {
-        const usuarios = await UsuarioRota.selectUsuarios_por_id(req.params.id);
-        res.json(usuarios);
-    });
-
-    app.get('/usuarios', async (req, res) => {
-        const usuarios = await UsuarioRota.selectUsuarios();  
-        res.json(usuarios);
-    });
- app.post('/login', async (req, res) => {
+  app.post('/login', async (req, res) => {
     const { email, senha } = req.body;
 
     if (!email || !senha) {
-        return res.status(400).send("Email e senha são obrigatórios.");
+      return res.status(400).send("Email e senha são obrigatórios.");
     }
 
     const usuario = await UsuarioRota.login(email);
 
     if (!usuario) {
-        return res.status(404).send("Usuário não encontrado.");
+      return res.status(404).send("Usuário não encontrado.");
     }
 
-   
     const resultado = await UsuarioRota.criarHash(senha, usuario.tempero);
 
-  console.log(resultado.hash);
-  console.log(usuario.senha);
-
     if (resultado.hash !== usuario.senha) {
-        return res.status(401).send("Senha incorreta.");
+      return res.status(401).send("Senha incorreta.");
     }
 
-
     res.status(200).json({ mensagem: "Login realizado com sucesso", usuario });
-});
+  });
 
+  app.post('/usuario', async (req, res) => {
+    const { nome_usuario, email, senha } = req.body;
 
+    if(!nome_usuario) {
+      return res.status(400).send("Faltou o nome!");
+    }
 
-    app.post('/usuario',async (req, res) => {
-         const { nome_usuario, email, senha } = req.body;
-        if(!req.body.nome_usuario){
-             return res.status(400).send("Faltou o nome!");
-        }
-         if(!req.body.email
-            || !/[a-z]+@[a-z\.]+\.com/.test(email)
-            || req.body.email?.length > 300)
-        return res.status(400).send("Faltou o email!!");
+    if(!email || !/[a-z]+@[a-z\.]+\.com/.test(email) || email.length > 300) {
+      return res.status(400).send("Email inválido!");
+    }
 
-    if(!req.body.senha || req.body.senha?.length < 8)
-        return res.status(400).send("Faltou a senha, ou ta curta. Mínimo de 8 caracteres");
+    if(!senha || senha.length < 8) {
+      return res.status(400).send("Senha faltando ou muito curta. Mínimo 8 caracteres.");
+    }
 
-     const resultado =   await UsuarioRota.criarHash(senha);
+    const resultado = await UsuarioRota.criarHash(senha);
     const novoUsuario = {
-        nome_usuario,
-        email,
-        senha: resultado.hash,
-        tempero: resultado.salt
+      nome_usuario,
+      email,
+      senha: resultado.hash,
+      tempero: resultado.salt
     };
-    
-        
-    
-     const usuario=await UsuarioRota.insertUsuario(novoUsuario);
-        res.status(201).json(usuario);
-    });
 
-    app.patch('/usuario/:id', async (req, res) => {
-        console.log(req.body);
-        await UsuarioRota.updateUsuario(req.params.id, req.body);
-        res.sendStatus(200);
-    });
+    const usuario = await UsuarioRota.insertUsuario(novoUsuario);
+    res.status(201).json(usuario);
+  });
 
-    app.delete('/usuario/:id', async (req, res) => {
-        console.log(req.body);
-        await UsuarioRota.excluirUsuario(req.params.id);
-        res.sendStatus(204);
-    });
-  
-///Coelho
-app.post('/coelho',async (require,response)=>{
-    
-    await CoelhosRota.insertCoelho(require.body);
-    response.sendStatus(201);
-});
-app.get('/coelhos',async (require,response)=>{
-    const coelhos=await CoelhosRota.selectCoelhos();
-    response.json(coelhos);
-});
-app.get('/coelho/:id',async (require,response)=>{
-    const coelho=await CoelhosRota.selectCoelhos_por_id(require.params.id);
-    response.json(coelho);
-});
-app.delete('/coelho/:id',async (require,response)=>{
-  
-    await CoelhosRota.excluirCoelho(require.params.id);
-    response.sendStatus(204);
-});
-app.patch('/coelho/:id',async (require,response)=>{
-   
-    await CoelhosRota.updateCoelho(require.params.id,require.body);
-    response.sendStatus(200);
-});
-app.post('/cruzamento', async (req, res) => {
+  app.patch('/usuario/:id', async (req, res) => {
+    await UsuarioRota.updateUsuario(req.params.id, req.body);
+    res.sendStatus(200);
+  });
+
+  app.delete('/usuario/:id', async (req, res) => {
+    await UsuarioRota.excluirUsuario(req.params.id);
+    res.sendStatus(204);
+  });
+
+  // Coelho
+  app.post('/coelho', async (req, res) => {
+    await CoelhosRota.insertCoelho(req.body);
+    res.sendStatus(201);
+  });
+
+  app.get('/coelhos', async (req, res) => {
+    const coelhos = await CoelhosRota.selectCoelhos();
+    res.json(coelhos);
+  });
+
+  app.get('/coelho/:id', async (req, res) => {
+    const coelho = await CoelhosRota.selectCoelhos_por_id(req.params.id);
+    res.json(coelho);
+  });
+
+  app.delete('/coelho/:id', async (req, res) => {
+    await CoelhosRota.excluirCoelho(req.params.id);
+    res.sendStatus(204);
+  });
+
+  app.patch('/coelho/:id', async (req, res) => {
+    await CoelhosRota.updateCoelho(req.params.id, req.body);
+    res.sendStatus(200);
+  });
+
+  // Cruzamento
+  app.post('/cruzamento', async (req, res) => {
     await CruzamentoRota.adicionarCruzamento(req.body);
     res.sendStatus(201);
   });
@@ -144,28 +137,27 @@ app.post('/cruzamento', async (req, res) => {
     res.sendStatus(204);
   });
 
-
-  // Matriz
+  // Matriz (apenas UMA rota GET)
   app.post('/matriz', async (req, res) => {
     await MatrizRota.adicionarMatriz(req.body);
     res.sendStatus(201);
   });
 
   app.get('/matriz', async (req, res) => {
+  try {
     const matrizes = await MatrizRota.listarMatrizes();
-    res.json(matrizes);
-  });
-
-  app.get('/matriz/:id', async (req, res) => {
-    const matriz = await MatrizRota.selecionarMatrizPorId(req.params.id);
-    res.json(matriz);
-  });
+    console.log('Matrizes encontradas:', matrizes);
+    res.json(matrizes);  
+  } catch (error) {
+    console.error('Erro ao buscar matrizes:', error);
+    res.status(500).json({ erro: 'Erro interno' });
+  }
+});
 
   app.delete('/matriz/:id', async (req, res) => {
     await MatrizRota.excluirMatriz(req.params.id);
     res.sendStatus(204);
   });
-
 
   // Reprodutor
   app.post('/reprodutor', async (req, res) => {
@@ -188,4 +180,3 @@ app.post('/cruzamento', async (req, res) => {
     res.sendStatus(204);
   });
 };
-

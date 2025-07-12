@@ -3,20 +3,18 @@ const apiurl = "http://localhost:3000";
 document.addEventListener('DOMContentLoaded', () => {
   fetch(apiurl + '/reprodutor')
     .then(res => {
-      console.log('Status:', res.status);
-      return res.text();
-    })
-    .then(text => {
-      console.log('Texto recebido:', text);
-
-      if (text) {
-        return JSON.parse(text);
-      } else {
-        throw new Error('Resposta vazia do servidor');
+      console.log('Status da resposta do reprodutor:', res.status);
+      // Verifica se a resposta HTTP foi bem-sucedida (status 2xx)
+      if (!res.ok) {
+        // Se não for OK, tenta ler o corpo da resposta como texto e joga um erro
+        return res.text().then(text => {
+          throw new Error(`HTTP error! status: ${res.status}, response: ${text}`);
+        });
       }
+      return res.json(); // Se OK, tenta parsear a resposta como JSON
     })
     .then(data => {
-      console.log('Dados recebidos:', data);
+      console.log('Dados de reprodutores recebidos:', data);
       if (Array.isArray(data) && data.length > 0) {
         preencherTabela(data);
       } else {
@@ -36,18 +34,20 @@ function preencherTabela(reprodutores) {
   reprodutores.forEach(rep => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${rep.numero_coelho || '-'}</td>
-      <td>${rep.nome_coelho || '-'}</td>
-      <td>${rep.raca_coelho || '-'}</td>
-      <td>${rep.data_nascimento_coelho ? new Date(rep.data_nascimento_coelho).toLocaleDateString('pt-BR') : '-'}</td>
+      <td>${rep.data_acasalamento ? new Date(rep.data_acasalamento).toLocaleDateString('pt-BR') : '-'}</td>
+      <td>${rep.numero_laparos || '-'}</td>
+      <td>${rep.peso_total_ninhada || '-'}</td> 
+      <td>${rep.nome_matriz || '-'}</td> 
     `;
-    selecionarLinha(tr, rep.id_coelho, 'ficha_reprodutor.html');
+    // Assegure-se de que 'id_reprodutor' exista no objeto retornado pelo seu modelo Reprodutor
+    selecionarLinha(tr, rep.id_reprodutor, 'ficha_reprodutor.html'); 
     tbody.appendChild(tr);
   });
 }
 
 function mostrarSemDados() {
   const tbody = document.getElementById('reprodutorTableBody');
+  // Colspan deve corresponder ao número de colunas no seu thead (4 colunas)
   tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum dado encontrado.</td></tr>`;
 }
 

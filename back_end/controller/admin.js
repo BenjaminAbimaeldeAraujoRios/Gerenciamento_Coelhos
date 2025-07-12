@@ -182,23 +182,58 @@ module.exports.rotas = function(app) {
   });
 
   // Reprodutor
-  app.post('/reprodutor', async (req, res) => {
-    await ReprodutorRota.adicionarReprodutor(req.body);
-    res.sendStatus(201);
+ app.post('/reprodutor', async (req, res) => {
+    try {
+      await ReprodutorRota.adicionarReprodutor(req.body);
+      res.sendStatus(201);
+    } catch (error) {
+      console.error('Erro ao adicionar reprodutor:', error);
+      res.status(500).json({ erro: 'Erro interno' });
+    }
   });
 
   app.get('/reprodutor', async (req, res) => {
-    const reprodutores = await ReprodutorRota.listarReprodutores();
-    res.json(reprodutores);
+    try {
+      const reprodutores = await ReprodutorRota.listarReprodutores();
+      // >>> ADICIONE ESTE LOG AQUI <<<
+      console.log('CONTROLLER - GET /reprodutor: Dados a serem enviados:', reprodutores);
+      res.json(reprodutores);
+    } catch (error) {
+      console.error('Erro ao buscar reprodutores:', error);
+      res.status(500).json({ erro: 'Erro interno' });
+    }
+  });
+  app.get('/reprodutor/:id', async (req, res) => {
+    try {
+      const reprodutor = await ReprodutorRota.selecionarReprodutorPorId(req.params.id);
+      if (reprodutor) {
+        res.json(reprodutor);
+      } else {
+        res.status(404).json({ mensagem: 'Reprodutor não encontrado' });
+      }
+    } catch (error) {
+      console.error('Erro ao buscar reprodutor por ID:', error);
+      res.status(500).json({ erro: 'Erro interno' });
+    }
   });
 
-  app.get('/reprodutor/:id', async (req, res) => {
-    const reprodutor = await ReprodutorRota.selecionarReprodutorPorId(req.params.id);
-    res.json(reprodutor);
+  app.patch('/reprodutor/:id', async (req, res) => {
+    try {
+      await ReprodutorRota.atualizarReprodutor(req.params.id, req.body);
+      res.sendStatus(200);
+    } catch (error) {
+      console.error('Erro ao atualizar reprodutor:', error);
+      res.status(500).json({ erro: 'Erro interno' });
+    }
   });
 
   app.delete('/reprodutor/:id', async (req, res) => {
-    await ReprodutorRota.excluirReprodutor(req.params.id);
-    res.sendStatus(204);
+    try {
+      await ReprodutorRota.excluirReprodutor(req.params.id);
+      res.sendStatus(204);
+    } catch (error) {
+      console.error('Erro ao excluir reprodutor:', error);
+      res.status(500).json({ erro: 'Erro interno' });
+    }
   });
 };

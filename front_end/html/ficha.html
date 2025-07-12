@@ -24,16 +24,24 @@
     }
 
     function clicarbotao3() {
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get("id");
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
 
-      if (!id) {
-        alert("ID do coelho não encontrado.");
-        return;
-      }
+  if (!id) {
+    alert("ID do coelho não encontrado.");
+    return;
+  }
+  const tipo = document.getElementById('tipo_coelho').value;
 
-      window.location.href = `cruza.html?id=${id}`;
-    }
+  if (tipo === 'Matriz') {
+    window.location.href = `index_matriz.html?id=${id}`;
+  } else if (tipo === 'Reprodutor') {
+    window.location.href = `index_reprodutor.html?id=${id}`;
+  } else {
+    alert('Tipo de coelho desconhecido.');
+  }
+}
+
   </script>
 </head>
 <body>

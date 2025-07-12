@@ -1,17 +1,19 @@
 const { Usuario } = require("../model/UsuárioModel");
-const{Professor}=require("../model/ProfessorModel");
-const{Alunos}=require("../model/AlunoModel");
-const{CoelhoModel}=require("../model/CoelhoModel");
-const{Cruzamento}=require("../model/CruzamentoModel");
-const Matriz = require('./model/Matriz');
-const Reprodutor = require('./model/Reprodutor');
+const { Professor } = require("../model/ProfessorModel");
+const { Alunos } = require("../model/AlunoModel");
+const { CoelhoModel } = require("../model/CoelhoModel");
+const { Cruzamento } = require("../model/CruzamentoModel");
+const { Matriz } = require('../model/MatrizModel');
+const { Reprodutor } = require('../model/ReprodutorModel');
 
 module.exports.rotas = function(app) {
-    const UsuarioRota = new Usuario();//Instância a classe Usuario para usar as funções da mesma
-    const ProfessorRota=new Professor();
-    const AlunoRota=new Alunos();
-    const CoelhosRota=new CoelhoModel();
-    const CruzamentoRota= new Cruzamento();
+  const UsuarioRota = new Usuario();
+  const ProfessorRota = new Professor();
+  const AlunoRota = new Alunos();
+  const CoelhosRota = new CoelhoModel();
+  const CruzamentoRota = new Cruzamento();
+  const MatrizRota = new Matriz();
+  const ReprodutorRota = new Reprodutor()
 
 
 
@@ -117,58 +119,73 @@ app.patch('/coelho/:id',async (require,response)=>{
     await CoelhosRota.updateCoelho(require.params.id,require.body);
     response.sendStatus(200);
 });
-//Cruzamento
-app.post('/cruzamento',async (require,response)=>{
-    
-    await CruzamentoRota.adcionarCruzamento(require.body);
-    response.sendStatus(201);
-});
-app.delete('/cruzamento/:id',async (require,response)=>{
-  
-    await CruzamentoRota.excluirCruzamento(require.params.id);
-    response.sendStatus(204);
-});
-app.get('/cruzamento',async (require,response)=>{
-    const cruzamento=await CruzamentoRota.selectCruzamento();
-    response.json(cruzamento);
-});
-app.get('/cruzamento/:id',async (require,response)=>{
-    const cruzamento=await CruzamentoRota.selectCruzamento_por_id(require.params.id);
-    response.json(cruzamento);
-});
-app.patch('/cruzamento/:id', async (require, response) => {
-    
-    await CruzamentoRota.updateCruzamento(require.body, require.params.id);
-    response.sendStatus(200);
-});
-//Matriz
-    app.post('/matriz', async (req, res) => {
-        await Matriz.adicionarMatriz(req.body);
-        res.sendStatus(201);
-    });
+app.post('/cruzamento', async (req, res) => {
+    await CruzamentoRota.adicionarCruzamento(req.body);
+    res.sendStatus(201);
+  });
 
-    app.get('/matriz', async (req, res) => {
-        const matrizes = await Matriz.listarMatrizes();
-        res.json(matrizes);
-    });
+  app.get('/cruzamento', async (req, res) => {
+    const cruzamentos = await CruzamentoRota.selectCruzamento();
+    res.json(cruzamentos);
+  });
 
-    app.delete('/matriz/:id', async (req, res) => {
-        await Matriz.excluirMatriz(req.params.id);
-        res.sendStatus(204);
-    });
-//Reprodutor
-    app.post('/reprodutor', async (req, res) => {
-        await Reprodutor.adicionarReprodutor(req.body);
-        res.sendStatus(201);
-    });
+  app.get('/cruzamento/:id', async (req, res) => {
+    const cruzamento = await CruzamentoRota.selectCruzamento_por_id(req.params.id);
+    res.json(cruzamento);
+  });
 
-    app.get('/reprodutor', async (req, res) => {
-        const reprodutores = await Reprodutor.listarReprodutores();
-        res.json(reprodutores);
-    });
+  app.patch('/cruzamento/:id', async (req, res) => {
+    await CruzamentoRota.updateCruzamento(req.body, req.params.id);
+    res.sendStatus(200);
+  });
 
-    app.delete('/reprodutor/:id', async (req, res) => {
-        await Reprodutor.excluirReprodutor(req.params.id);
-        res.sendStatus(204);
-    });
+  app.delete('/cruzamento/:id', async (req, res) => {
+    await CruzamentoRota.excluirCruzamento(req.params.id);
+    res.sendStatus(204);
+  });
+
+
+  // Matriz
+  app.post('/matriz', async (req, res) => {
+    await MatrizRota.adicionarMatriz(req.body);
+    res.sendStatus(201);
+  });
+
+  app.get('/matriz', async (req, res) => {
+    const matrizes = await MatrizRota.listarMatrizes();
+    res.json(matrizes);
+  });
+
+  app.get('/matriz/:id', async (req, res) => {
+    const matriz = await MatrizRota.selecionarMatrizPorId(req.params.id);
+    res.json(matriz);
+  });
+
+  app.delete('/matriz/:id', async (req, res) => {
+    await MatrizRota.excluirMatriz(req.params.id);
+    res.sendStatus(204);
+  });
+
+
+  // Reprodutor
+  app.post('/reprodutor', async (req, res) => {
+    await ReprodutorRota.adicionarReprodutor(req.body);
+    res.sendStatus(201);
+  });
+
+  app.get('/reprodutor', async (req, res) => {
+    const reprodutores = await ReprodutorRota.listarReprodutores();
+    res.json(reprodutores);
+  });
+
+  app.get('/reprodutor/:id', async (req, res) => {
+    const reprodutor = await ReprodutorRota.selecionarReprodutorPorId(req.params.id);
+    res.json(reprodutor);
+  });
+
+  app.delete('/reprodutor/:id', async (req, res) => {
+    await ReprodutorRota.excluirReprodutor(req.params.id);
+    res.sendStatus(204);
+  });
 };
+

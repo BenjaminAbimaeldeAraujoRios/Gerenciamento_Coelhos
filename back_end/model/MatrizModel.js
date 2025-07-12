@@ -9,8 +9,9 @@ class Matriz {
         laparos_mortos,
         laparos_transferidos,
         peso_total_ninhada,
-        id_controle
-      ) VALUES ($1, $2, $3, $4, $5, $6)
+        id_controle,
+        numero_reprodutor
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
     `;
     const res = await Database.query(sql, [
       matriz.data_parto,
@@ -18,20 +19,43 @@ class Matriz {
       matriz.laparos_mortos,
       matriz.laparos_transferidos,
       matriz.peso_total_ninhada,
-      matriz.id_controle
+      matriz.id_controle,
+      matriz.numero_reprodutor
     ]);
     return res;
   }
 
   async listarMatrizes() {
-    const res = await Database.query("SELECT * FROM matriz");
-    return res;
+    const sql = `
+      SELECT 
+        m.*,
+        c.data_cruzamento,
+        mae.nome_coelho AS nome_matriz,
+        pai.nome_coelho AS nome_reprodutor
+      FROM matriz m
+      JOIN cruzamento c ON m.id_controle = c.id_controle
+      JOIN coelho mae ON c.matriz_coelho = mae.id_coelho
+      JOIN coelho pai ON c.reprodutor_coelho = pai.id_coelho
+    `;
+    const res = await Database.query(sql);
+    return res.rows;
   }
 
   async selecionarMatrizPorId(id) {
-    const sql = "SELECT * FROM matriz WHERE id_matriz = $1";
+    const sql = `
+      SELECT 
+        m.*,
+        c.data_cruzamento,
+        mae.nome_coelho AS nome_matriz,
+        pai.nome_coelho AS nome_reprodutor
+      FROM matriz m
+      JOIN cruzamento c ON m.id_controle = c.id_controle
+      JOIN coelho mae ON c.matriz_coelho = mae.id_coelho
+      JOIN coelho pai ON c.reprodutor_coelho = pai.id_coelho
+      WHERE m.id_matriz = $1
+    `;
     const res = await Database.query(sql, [id]);
-    return res;
+    return res.rows[0];
   }
 
   async atualizarMatriz(id, matriz) {
@@ -42,8 +66,9 @@ class Matriz {
         laparos_mortos = $3,
         laparos_transferidos = $4,
         peso_total_ninhada = $5,
-        id_controle = $6
-      WHERE id_matriz = $7
+        id_controle = $6,
+        numero_reprodutor = $7
+      WHERE id_matriz = $8
     `;
     const res = await Database.query(sql, [
       matriz.data_parto,
@@ -52,6 +77,7 @@ class Matriz {
       matriz.laparos_transferidos,
       matriz.peso_total_ninhada,
       matriz.id_controle,
+      matriz.numero_reprodutor,
       id
     ]);
     return res;
@@ -67,5 +93,3 @@ class Matriz {
 module.exports = {
   Matriz
 };
-
-

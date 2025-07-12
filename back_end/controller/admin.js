@@ -41,14 +41,13 @@ module.exports.rotas = function(app) {
    
     const resultado = await UsuarioRota.criarHash(senha, usuario.tempero);
 
-  
+  console.log(resultado.hash);
+  console.log(usuario.senha);
 
     if (resultado.hash !== usuario.senha) {
         return res.status(401).send("Senha incorreta.");
     }
 
-    delete usuario.senha;
-    delete usuario.tempero;
 
     res.status(200).json({ mensagem: "Login realizado com sucesso", usuario });
 });

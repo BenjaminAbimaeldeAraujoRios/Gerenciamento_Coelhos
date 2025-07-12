@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ficha da Matriz</title>
+  <link rel="stylesheet" href="/front_end/css/fichas_styles.css" />
+
+  <script>
+    function voltar() {
+      window.location.href = 'matriz_index.html';
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="form-box">
+      <div class="left">
+        <label>Data do Parto
+          <input type="date" id="data_parto" readonly>
+        </label>
+
+        <label>Láparos
+          <input type="number" id="laparos" readonly>
+        </label>
+
+        <label>Láparos Mortos
+          <input type="number" id="laparos_mortos" readonly>
+        </label>
+      </div>
+
+      <div class="right">
+        <label>Láparos Transferidos
+          <input type="number" id="laparos_transferidos" readonly>
+        </label>
+
+        <label>Peso Total da Ninhada (g)
+          <input type="text" id="peso_total_ninhada" readonly>
+        </label>
+
+        <label>Reprodutor
+          <input type="number" id="Reprodutor" readonly>
+        </label>
+
+        <div class="buttons">
+         <button class="back" type="button" onclick="clicarbotao2()">Salvar Alterações</button>
+         <button class="back" onclick="voltar()">Voltar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/front_end/js/ficha_matriz.js"></script>
+</body>
+</html>

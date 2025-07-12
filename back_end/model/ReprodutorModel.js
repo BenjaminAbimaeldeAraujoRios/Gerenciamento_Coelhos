@@ -1,61 +1,73 @@
 const Database = require('../database');
 
-class Reprodutor {
-  async adicionarReprodutor(reprodutor) {
+class Matriz {
+  async adicionarMatriz(matriz) {
     const sql = `
-      INSERT INTO reprodutor (
-        data_acasalamento,
-        numero_matriz,
-        numero_laparos,
-        id_controle
-      ) VALUES ($1, $2, $3, $4)
+      INSERT INTO matriz (
+        data_parto,
+        laparos,
+        laparos_mortos,
+        laparos_transferidos,
+        peso_total_ninhada,
+        id_controle,
+        numero_reprodutor
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
     `;
     const res = await Database.query(sql, [
-      reprodutor.data_acasalamento,
-      reprodutor.numero_matriz,
-      reprodutor.numero_laparos,
-      reprodutor.id_controle
+      matriz.data_parto,
+      matriz.laparos,
+      matriz.laparos_mortos,
+      matriz.laparos_transferidos,
+      matriz.peso_total_ninhada,
+      matriz.id_controle,
+      matriz.numero_reprodutor
     ]);
     return res;
   }
 
-  async listarReprodutores() {
-    const res = await Database.query("SELECT * FROM reprodutor");
+  async listarMatrizes() {
+    const res = await Database.query("SELECT * FROM matriz");
     return res;
   }
 
-  async selecionarReprodutorPorId(id) {
-    const sql = "SELECT * FROM reprodutor WHERE id_reprodutor = $1";
+  async selecionarMatrizPorId(id) {
+    const sql = "SELECT * FROM matriz WHERE id_matriz = $1";
     const res = await Database.query(sql, [id]);
     return res;
   }
 
-  async atualizarReprodutor(id, reprodutor) {
+  async atualizarMatriz(id, matriz) {
     const sql = `
-      UPDATE reprodutor SET
-        data_acasalamento = $1,
-        numero_matriz = $2,
-        numero_laparos = $3,
-        id_controle = $4
-      WHERE id_reprodutor = $5
+      UPDATE matriz SET
+        data_parto = $1,
+        laparos = $2,
+        laparos_mortos = $3,
+        laparos_transferidos = $4,
+        peso_total_ninhada = $5,
+        id_controle = $6,
+        numero_reprodutor = $7
+      WHERE id_matriz = $8
     `;
     const res = await Database.query(sql, [
-      reprodutor.data_acasalamento,
-      reprodutor.numero_matriz,
-      reprodutor.numero_laparos,
-      reprodutor.id_controle,
+      matriz.data_parto,
+      matriz.laparos,
+      matriz.laparos_mortos,
+      matriz.laparos_transferidos,
+      matriz.peso_total_ninhada,
+      matriz.id_controle,
+      matriz.numero_reprodutor,
       id
     ]);
     return res;
   }
 
-  async excluirReprodutor(id) {
-    const sql = "DELETE FROM reprodutor WHERE id_reprodutor = $1";
+  async excluirMatriz(id) {
+    const sql = "DELETE FROM matriz WHERE id_matriz = $1";
     const res = await Database.query(sql, [id]);
     return res;
   }
 }
 
 module.exports = {
-  Reprodutor
+  Matriz
 };

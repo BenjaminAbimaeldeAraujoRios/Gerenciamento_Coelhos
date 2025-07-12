@@ -9,28 +9,15 @@ const {Reprodutor} = require('../model/ReprodutorModel');
 
 module.exports.rotas = function(app) {
     const UsuarioRota = new Usuario();//Instância a classe Usuario para usar as funções da mesma
-    const ProfessorRota=new Professor();
+    const ProfessorRota= new Professor();
     const AlunoRota=new Alunos();
     const CoelhosRota=new CoelhoModel();
    const MatrizRota=new Matriz();
    const CruzamentoRota=new Cruzamento();
    const ReprodutorRota= new Reprodutor();
 
-const { Professor } = require("../model/ProfessorModel");
-const { Alunos } = require("../model/AlunoModel");
-const { CoelhoModel } = require("../model/CoelhoModel");
-const { Cruzamento } = require("../model/CruzamentoModel");
-const { Matriz } = require('../model/MatrizModel');
-const { Reprodutor } = require('../model/ReprodutorModel');
 
-module.exports.rotas = function(app) {
-  const UsuarioRota = new Usuario();
-  const ProfessorRota = new Professor();
-  const AlunoRota = new Alunos();
-  const CoelhosRota = new CoelhoModel();
-  const CruzamentoRota = new Cruzamento();
-  const MatrizRota = new Matriz();
-  const ReprodutorRota = new Reprodutor();
+
 
 
   // Usuário
@@ -92,7 +79,7 @@ app.post('/alterarSenha', async (req, res) => {
     res.status(200).json({ mensagem: "Alteração de senha realizada com sucesso!!", usuario });
 });
 
-  });
+  
 
 
 
@@ -284,4 +271,4 @@ app.post('/alterarSenha', async (req, res) => {
       res.status(500).json({ erro: 'Erro interno' });
     }
   });
-};
+}

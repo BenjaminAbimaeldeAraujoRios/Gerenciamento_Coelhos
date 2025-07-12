@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .then(text => {
       console.log('Texto recebido:', text);
-      // Tenta converter para JSON somente se o texto não estiver vazio
+     
       if (text) {
         return JSON.parse(text);
       } else {
@@ -31,29 +31,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function preencherTabela(matrizes) {
   const tbody = document.getElementById('matrizTableBody');
-  tbody.innerHTML = '';
+  tbody.innerHTML = ''; 
 
   matrizes.forEach(matriz => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${matriz.data_parto || '-'}</td>
+      <td>${matriz.data_parto ? new Date(matriz.data_parto).toLocaleDateString('pt-BR') : '-'}</td>
       <td>${matriz.laparos || '-'}</td>
       <td>${matriz.laparos_mortos || '-'}</td>
       <td>${matriz.laparos_transferidos || '-'}</td>
       <td>${matriz.peso_total_ninhada || '-'}</td>
-      <td>${matriz.nome_reprodutor || '-'}</td>
+      <td>${matriz.numero_reprodutor || '-'}</td>
     `;
     selecionarLinha(tr, matriz.id_matriz, 'ficha_matriz.html');
     tbody.appendChild(tr);
   });
 }
 
-function mostrarSemDados() {
-  const tbody = document.getElementById('matrizTableBody');
-  tbody.innerHTML = `
-    <tr><td colspan="6" style="text-align:center;">Nenhum dado encontrado.</td></tr>
-  `;
-}
+
 
 function selecionarLinha(tr, id, pagina) {
   tr.style.cursor = 'pointer';

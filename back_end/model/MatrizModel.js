@@ -1,3 +1,4 @@
+// model/MatrizModel.js
 const Database = require('../database');
 
 class Matriz {
@@ -22,47 +23,52 @@ class Matriz {
       matriz.id_controle,
       matriz.numero_reprodutor
     ]);
-    return res;
+    return res; 
   }
 
   async listarMatrizes() {
-  try {
-    const sql = `
-      SELECT 
-        m.*,
-        c.data_cruzamento,
-        mae.nome_coelho AS nome_matriz,
-        pai.nome_coelho AS nome_reprodutor
-      FROM matriz m
-      JOIN cruzamento c ON m.id_controle = c.id_controle
-      JOIN coelho mae ON c.matriz_coelho = mae.id_coelho
-      JOIN coelho pai ON c.reprodutor_coelho = pai.id_coelho
-    `;
-    const res = await Database.query(sql);
-    console.log('>> Resultado da query listarMatrizes:', res.rows);
-    return res.rows;
-  } catch (error) {
-    console.error('Erro no listarMatrizes:', error);
-    throw error;
-  }
-}
+    try {
+      const sql = `
+        SELECT
+          m.*,
+          c.data_cruzamento,
+          mae.nome_coelho AS nome_matriz,
+          pai.nome_coelho AS nome_reprodutor
+        FROM matriz m
+        LEFT JOIN cruzamento c ON m.id_controle = c.id_controle
+        LEFT JOIN coelho mae ON c.matriz_coelho = mae.id_coelho
+        LEFT JOIN coelho pai ON c.reprodutor_coelho = pai.id_coelho
+      `;
+      const res = await Database.query(sql);
 
+     
+      console.log('>> Retorno completo de Database.query (listarMatrizes):', res);
+
+      
+      return res;
+
+    } catch (error) {
+      console.error('Erro no listarMatrizes:', error);
+      throw error;
+    }
+  }
 
   async selecionarMatrizPorId(id) {
     const sql = `
-      SELECT 
+      SELECT
         m.*,
         c.data_cruzamento,
         mae.nome_coelho AS nome_matriz,
         pai.nome_coelho AS nome_reprodutor
       FROM matriz m
-      JOIN cruzamento c ON m.id_controle = c.id_controle
-      JOIN coelho mae ON c.matriz_coelho = mae.id_coelho
-      JOIN coelho pai ON c.reprodutor_coelho = pai.id_coelho
+      LEFT JOIN cruzamento c ON m.id_controle = c.id_controle
+      LEFT JOIN coelho mae ON c.matriz_coelho = mae.id_coelho
+      LEFT JOIN coelho pai ON c.reprodutor_coelho = pai.id_coelho
       WHERE m.id_matriz = $1
     `;
     const res = await Database.query(sql, [id]);
-    return res.rows[0];
+    
+    return res[0]; 
   }
 
   async atualizarMatriz(id, matriz) {
@@ -87,16 +93,16 @@ class Matriz {
       matriz.numero_reprodutor,
       id
     ]);
-    return res;
+    return res; 
   }
 
   async excluirMatriz(id) {
     const sql = "DELETE FROM matriz WHERE id_matriz = $1";
     const res = await Database.query(sql, [id]);
-    return res;
+    return res; 
   }
 }
 
 module.exports = {
-  Matriz
+  Matriz,
 };

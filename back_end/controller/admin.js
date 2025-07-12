@@ -137,26 +137,48 @@ module.exports.rotas = function(app) {
     res.sendStatus(204);
   });
 
-  // Matriz (apenas UMA rota GET)
   app.post('/matriz', async (req, res) => {
-    await MatrizRota.adicionarMatriz(req.body);
-    res.sendStatus(201);
+    try {
+      await MatrizRota.adicionarMatriz(req.body);
+      res.sendStatus(201);
+    } catch (error) {
+      console.error('Erro ao adicionar matriz:', error);
+      res.status(500).json({ erro: 'Erro interno' });
+    }
   });
 
   app.get('/matriz', async (req, res) => {
-  try {
-    const matrizes = await MatrizRota.listarMatrizes();
-    console.log('Matrizes encontradas:', matrizes);
-    res.json(matrizes);  
-  } catch (error) {
-    console.error('Erro ao buscar matrizes:', error);
-    res.status(500).json({ erro: 'Erro interno' });
-  }
-});
+    try {
+      const matrizes = await MatrizRota.listarMatrizes();
+      res.json(matrizes);  
+    } catch (error) {
+      console.error('Erro ao buscar matrizes:', error); 
+      res.status(500).json({ erro: 'Erro interno' });
+    }
+  });
 
-  app.delete('/matriz/:id', async (req, res) => {
-    await MatrizRota.excluirMatriz(req.params.id);
-    res.sendStatus(204);
+  app.get('/matriz/:id', async (req, res) => {
+    try {
+      const matriz = await MatrizRota.selecionarMatrizPorId(req.params.id);
+      if (matriz) {
+        res.json(matriz);
+      } else {
+        res.status(404).json({ mensagem: 'Matriz não encontrada' });
+      }
+    } catch (error) {
+      console.error('Erro ao buscar matriz por ID:', error);
+      res.status(500).json({ erro: 'Erro interno' });
+    }
+  });
+
+  app.patch('/matriz/:id', async (req, res) => {
+    try {
+      await MatrizRota.atualizarMatriz(req.params.id, req.body);
+      res.sendStatus(200);
+    } catch (error) {
+      console.error('Erro ao atualizar matriz:', error);
+      res.status(500).json({ erro: 'Erro interno' });
+    }
   });
 
   // Reprodutor

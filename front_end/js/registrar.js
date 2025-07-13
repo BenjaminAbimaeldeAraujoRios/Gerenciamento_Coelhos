@@ -1,26 +1,32 @@
-   app.post('/usuario',async (req, res) => {
-         const { nome_usuario, email, senha } = req.body;
-        if(!req.body.nome_usuario){
-             return res.status(400).send("Faltou o nome!");
-        }
-         if(!req.body.email
-            || !/[a-z]+@[a-z\.]+\.com/.test(email)
-            || req.body.email?.length > 300)
-        return res.status(400).send("Faltou o email!!");
+async function clicarbotao() {
+  const form = document.getElementById("registroForm");
 
-    if(!req.body.senha || req.body.senha?.length < 8)
-        return res.status(400).send("Faltou a senha, ou ta curta. Mínimo de 8 caracteres");
+  const nome_usuario = form.nome_usuario.value.trim();
+  const email = form.email.value.trim();
+  const senha = form.senha.value;
 
-     const resultado =   await UsuarioRota.criarHash(senha);
-    const novoUsuario = {
-        nome_usuario,
-        email,
-        senha: resultado.hash,
-        tempero: resultado.salt
-    };
-    
-        
-    
-     const usuario=await UsuarioRota.insertUsuario(novoUsuario);
-        res.status(201).json(usuario);
+  if (!nome_usuario || !email || !senha) {
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  try {
+    const response = await fetch('/usuario', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ nome_usuario, email, senha })
     });
+
+    if (response.ok) {
+      alert("Usuário registrado com sucesso!");
+      window.location.href = "login.html";
+    } else {
+      const errorText = await response.text();
+      alert("Erro ao registrar: " + errorText);
+    }
+  } catch (error) {
+    alert("Erro na requisição: " + error.message);
+  }
+}

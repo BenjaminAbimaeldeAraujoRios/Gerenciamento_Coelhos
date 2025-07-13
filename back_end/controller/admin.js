@@ -271,4 +271,6 @@ app.post('/alterarSenha', async (req, res) => {
       res.status(500).json({ erro: 'Erro interno' });
     }
   });
+
+  
 }

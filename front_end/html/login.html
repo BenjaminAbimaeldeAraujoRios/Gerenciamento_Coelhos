@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
@@ -7,17 +8,15 @@
 <body>
   <div class="container">
     <h2>Login</h2>
-    <form>
-      <input type="email" placeholder="Email" required>
-      <input type="password" placeholder="Senha" required>
-      <a href="index.html" class="button">Entrar</a>
-      <a href="Alt_senha.html">Esqueceu a senha?</a>
+    <form id="loginForm">
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="senha" placeholder="Senha" required>
+      <button type="button" onclick="loginUsuario()">Entrar</button>
+      <a href="mudar.html">Esqueceu a senha?</a>
     </form>
     <p>Não tem uma conta? <a href="registrar.html">Registrar</a></p>
 
-
- <script src="/front_end/js/login.js"></script>
-    
+    <script src="/front_end/js/login.js"></script>
   </div>
 </body>
 </html>

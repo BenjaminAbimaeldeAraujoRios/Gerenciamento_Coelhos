@@ -1,29 +1,29 @@
-app.post('/login', async (req, res) => {
-    const { email, senha } = req.body;
+async function loginUsuario() {
+  const form = document.getElementById("loginForm");
+  const email = form.email.value.trim();
+  const senha = form.senha.value;
 
-    if (!email || !senha) {
-        return res.status(400).send("Email e senha são obrigatórios.");
+  if (!email || !senha) {
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  try {
+    const response = await fetch("/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, senha }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      alert(data.mensagem);
+      window.location.href = "index.html";
+    } else {
+    
+      alert("Email ou senha inválidos.");
     }
-
-    const usuario = await UsuarioRota.login(email);
-
-    if (!usuario) {
-        return res.status(404).send("Usuário não encontrado.");
-    }
-
-   
-    const resultado = await UsuarioRota.criarHash(senha, usuario.tempero);
-
-  console.log(resultado.hash);
-  console.log(usuario.senha);
-
-    if (resultado.hash !== usuario.senha) {
-        return res.status(401).send("Senha incorreta.");
-    }
-
-
-    res.status(200).json({ mensagem: "Login realizado com sucesso", usuario });
-});
-
-
- 
+  } catch (error) {
+    alert("Erro na requisição. Tente novamente.");
+  }
+}

@@ -1,24 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Alterar Senha - CarrotLog</title>
-  <link rel="stylesheet" href="/front_end/css/menus_styles.css">
- 
-
+  <link rel="stylesheet" href="/front_end/css/menus_styles.css" />
 </head>
 <body>
   <div class="container">
     <h2>Alterar Senha</h2>
-    <p>Foi enviado um código para seu email</p>
-    <form action="/alterar-senha" method="post">
-      <input type="email" name="email" placeholder="Email" required>
-      <input type="password" name="nova_senha" placeholder="Nova Senha" required>
-      <button type="submit">Alterar</button>
+    <form id="formAlterarSenha">
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="password" name="nova_senha" placeholder="Nova Senha" required />
+      <button type="button" onclick="alterarSenha()">Alterar</button>
     </form>
   </div>
 
- <script src="/front_end/js/mudar.js"></script>
-
+  <script src="/front_end/js/mudar.js"></script>
 </body>
 </html>

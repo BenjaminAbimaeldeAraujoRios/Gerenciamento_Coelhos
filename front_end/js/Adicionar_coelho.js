@@ -1,4 +1,11 @@
 async function adicionarCoelho() {
+  const id_usuario = localStorage.getItem("id_usuario");
+
+  if (!id_usuario) {
+    alert("Usuário não identificado. Faça login novamente.");
+    window.location.href = "login.html";
+    return;
+  }
   const novoCoelho = {
     numero_coelho: document.getElementById('numero_coelho').value,
     raca_coelho: document.getElementById('raca_coelho').value,
@@ -12,7 +19,8 @@ async function adicionarCoelho() {
     matriz_coelho: document.getElementById('matriz_coelho').value,
     reprodutor_coelho: document.getElementById('reprodutor_coelho').value,
     observacoes_coelho: document.getElementById('observacoes_coelho').value,
-    id_usuario: 1
+    id_usuario: parseInt(id_usuario)
+
   };
 
   try {

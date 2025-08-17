@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Adicionar Matriz</title>
+  <link rel="stylesheet" href="/front_end/css/fichas_styles.css" />
+</head>
+<body>
+  <form id="formMatriz">
+    <div class="container">
+      <div class="form-box">
+        <label for="data_parto">Data de Parto
+          <input type="date" id="data_parto" name="data_parto" required>
+        </label>
+
+        <label for="laparos">Láparos
+          <input type="number" id="laparos" name="laparos">
+        </label>
+
+        <label for="laparos_mortos">Láparos Mortos
+          <input type="number" id="laparos_mortos" name="laparos_mortos">
+        </label>
+
+        <label for="laparos_transferidos">Láparos Transferidos
+          <input type="number" id="laparos_transferidos" name="laparos_transferidos">
+        </label>
+
+        <label for="peso_total_ninhada">Peso Total Ninhada
+          <input type="text" id="peso_total_ninhada" name="peso_total_ninhada">
+        </label>
+
+        <label for="numero_reprodutor">Reprodutor (ID)
+          <input type="number" id="numero_reprodutor" name="numero_reprodutor">
+        </label>
+
+  <!-- id_coelho now provided via querystring ?coelho_id=...; removed manual input -->
+
+        <div class="buttons">
+          <button type="button" onclick="salvar()">Salvar</button>
+          <button type="button" onclick="window.history.back()">Voltar</button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <script src="/front_end/js/adicionar_matriz.js"></script>
+</body>
+</html>

@@ -2,8 +2,8 @@ const { Usuario } = require("../model/UsuárioModel");
 const{Professor}=require("../model/ProfessorModel");
 const{Alunos}=require("../model/AlunoModel");
 const{CoelhoModel}=require("../model/CoelhoModel");
-const{Cruzamento}=require("../model/CruzamentoModel");
 const {Matriz}= require('../model/MatrizModel');
+const Database = require('../database');
 const {Reprodutor} = require('../model/ReprodutorModel');
 
 
@@ -13,7 +13,7 @@ module.exports.rotas = function(app) {
     const AlunoRota=new Alunos();
     const CoelhosRota=new CoelhoModel();
    const MatrizRota=new Matriz();
-   const CruzamentoRota=new Cruzamento();
+  // Cruzamento model removed; not used
    const ReprodutorRota= new Reprodutor();
 
 
@@ -146,79 +146,82 @@ app.post('/alterarSenha', async (req, res) => {
     res.sendStatus(200);
   });
 
-  // Cruzamento
-  app.post('/cruzamento', async (req, res) => {
-    await CruzamentoRota.adicionarCruzamento(req.body);
+ app.post('/matriz', async (req, res) => {
+  try {
+    // validate required parent id
+    const idCoelho = req.body && (req.body.id_coelho || req.body.coelho_id || req.query.coelho_id);
+    if (!idCoelho) {
+      return res.status(400).json({ erro: 'id_coelho (coelho pai) é obrigatório ao criar uma matriz' });
+    }
+    // coerce to integer
+    req.body.id_coelho = parseInt(idCoelho, 10);
+    await MatrizRota.insertMatriz(req.body);
     res.sendStatus(201);
-  });
+  } catch (error) {
+    console.error('Erro ao adicionar matriz:', error);
+    res.status(500).json({ erro: 'Erro interno' });
+  }
+});
 
-  app.get('/cruzamento', async (req, res) => {
-    const cruzamentos = await CruzamentoRota.selectCruzamento();
-    res.json(cruzamentos);
-  });
+app.get('/matriz', async (req, res) => {
+  console.log('ENTER /matriz');
+  try {
+    // quick DB test from controller
+    try {
+      const test = await Database.query('SELECT 1 as ok');
+      console.log('DEBUG DB test for /matriz:', test);
+    } catch (e) {
+      console.error('DEBUG DB test error:', e && e.stack ? e.stack : e);
+    }
+  // support optional filter by coelho id: /matriz?coelho_id=123 or /matriz?id=123
+  // Prefer explicit undefined checks so values like '0' are preserved if provided by a client.
+  let coelhoIdRaw = (req.query.coelho_id !== undefined) ? req.query.coelho_id : (req.query.id !== undefined ? req.query.id : null);
+  // parseInt only when we actually have something; keep null otherwise
+  const coelhoId = (coelhoIdRaw !== null) ? parseInt(coelhoIdRaw, 10) : null;
+  console.log('DEBUG /matriz - received coelhoIdRaw:', coelhoIdRaw, 'parsed:', coelhoId, 'isValidNumber:', coelhoId !== null && !Number.isNaN(coelhoId));
+  const matrizes = await MatrizRota.selectMatrizes(coelhoId);
+  console.log('DEBUG /matriz - type:', typeof matrizes, 'isArray:', Array.isArray(matrizes));
+  console.log('DEBUG /matriz - sample:', matrizes && matrizes.length ? matrizes[0] : matrizes);
+  res.json(matrizes);  
+  } catch (error) {
+    console.error('Erro ao buscar matrizes:', error && error.stack ? error.stack : error);
+    res.status(500).json({ erro: 'Erro interno' });
+  }
+});
 
-  app.get('/cruzamento/:id', async (req, res) => {
-    const cruzamento = await CruzamentoRota.selectCruzamento_por_id(req.params.id);
-    res.json(cruzamento);
-  });
+app.get('/matriz/:id', async (req, res) => {
+  try {
+    const matriz = await MatrizRota.selectMatrizPorId(req.params.id);
+    if (matriz) {
+      res.json(matriz);
+    } else {
+      res.status(404).json({ mensagem: 'Matriz não encontrada' });
+    }
+  } catch (error) {
+    console.error('Erro ao buscar matriz por ID:', error);
+    res.status(500).json({ erro: 'Erro interno' });
+  }
+});
 
-  app.patch('/cruzamento/:id', async (req, res) => {
-    await CruzamentoRota.updateCruzamento(req.body, req.params.id);
+app.patch('/matriz/:id', async (req, res) => {
+  try {
+    await MatrizRota.updateMatriz(req.params.id, req.body);
     res.sendStatus(200);
-  });
-
-  app.delete('/cruzamento/:id', async (req, res) => {
-    await CruzamentoRota.excluirCruzamento(req.params.id);
-    res.sendStatus(204);
-  });
-
-  app.post('/matriz', async (req, res) => {
-    try {
-      await MatrizRota.adicionarMatriz(req.body);
-      res.sendStatus(201);
-    } catch (error) {
-      console.error('Erro ao adicionar matriz:', error);
-      res.status(500).json({ erro: 'Erro interno' });
-    }
-  });
-
-  app.get('/matriz', async (req, res) => {
-    try {
-      const matrizes = await MatrizRota.listarMatrizes();
-      res.json(matrizes);  
-    } catch (error) {
-      console.error('Erro ao buscar matrizes:', error); 
-      res.status(500).json({ erro: 'Erro interno' });
-    }
-  });
-
-  app.get('/matriz/:id', async (req, res) => {
-    try {
-      const matriz = await MatrizRota.selecionarMatrizPorId(req.params.id);
-      if (matriz) {
-        res.json(matriz);
-      } else {
-        res.status(404).json({ mensagem: 'Matriz não encontrada' });
-      }
-    } catch (error) {
-      console.error('Erro ao buscar matriz por ID:', error);
-      res.status(500).json({ erro: 'Erro interno' });
-    }
-  });
-
-  app.patch('/matriz/:id', async (req, res) => {
-    try {
-      await MatrizRota.atualizarMatriz(req.params.id, req.body);
-      res.sendStatus(200);
-    } catch (error) {
-      console.error('Erro ao atualizar matriz:', error);
-      res.status(500).json({ erro: 'Erro interno' });
-    }
-  });
+  } catch (error) {
+    console.error('Erro ao atualizar matriz:', error);
+    res.status(500).json({ erro: 'Erro interno' });
+  }
+});
 
   // Reprodutor
  app.post('/reprodutor', async (req, res) => {
     try {
+      // accept either id_coelho or numero_matriz (from older clients)
+      const idCoelho = req.body && (req.body.id_coelho || req.body.numero_matriz);
+      if (!idCoelho) {
+        return res.status(400).json({ erro: 'id_coelho (matriz pai) ou numero_matriz é obrigatório ao criar um reprodutor' });
+      }
+      req.body.id_coelho = parseInt(idCoelho, 10);
       await ReprodutorRota.adicionarReprodutor(req.body);
       res.sendStatus(201);
     } catch (error) {
@@ -228,13 +231,19 @@ app.post('/alterarSenha', async (req, res) => {
   });
 
   app.get('/reprodutor', async (req, res) => {
+  console.log('ENTER /reprodutor');
     try {
-      const reprodutores = await ReprodutorRota.listarReprodutores();
+  // accept either ?coelho_id= or ?id=
+  let coelhoIdRaw = req.query.coelho_id || req.query.id || null;
+  const coelhoId = coelhoIdRaw ? parseInt(coelhoIdRaw, 10) : null;
+  console.log('DEBUG /reprodutor - received coelhoIdRaw:', coelhoIdRaw, 'parsed:', coelhoId);
+  const reprodutores = await ReprodutorRota.listarReprodutores(coelhoId);
       // >>> ADICIONE ESTE LOG AQUI <<<
-      console.log('CONTROLLER - GET /reprodutor: Dados a serem enviados:', reprodutores);
-      res.json(reprodutores);
+  console.log('DEBUG /reprodutor - type:', typeof reprodutores, 'isArray:', Array.isArray(reprodutores));
+  console.log('DEBUG /reprodutor - sample:', reprodutores && reprodutores.length ? reprodutores[0] : reprodutores);
+  res.json(reprodutores);
     } catch (error) {
-      console.error('Erro ao buscar reprodutores:', error);
+      console.error('Erro ao buscar reprodutores:', error && error.stack ? error.stack : error);
       res.status(500).json({ erro: 'Erro interno' });
     }
   });

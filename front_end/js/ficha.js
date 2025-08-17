@@ -26,7 +26,9 @@ window.onload = async () => {
     document.getElementById("tipo_coelho").value = coelho.tipo_coelho || "";
     document.getElementById("matriz_coelho").value = coelho.matriz_coelho || "";
     document.getElementById("reprodutor_coelho").value = coelho.reprodutor_coelho || "";
-    document.getElementById("observacoes_coelho").value = coelho.observacoes_coelho || "";
+  document.getElementById("observacoes_coelho").value = coelho.observacoes_coelho || "";
+  document.getElementById("situacao_coelho").value = coelho.situacao_coelho || coelho.situacao || "";
+  document.getElementById("transferido_coelho").value = coelho.transferido_coelho || "";
 
     esconderbotaolaparo();
 

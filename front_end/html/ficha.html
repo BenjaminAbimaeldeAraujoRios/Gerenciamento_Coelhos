@@ -24,23 +24,26 @@
     }
 
     function clicarbotao3() {
-  const params = new URLSearchParams(window.location.search);
-  const id = params.get("id");
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get("id");
 
-  if (!id) {
-    alert("ID do coelho não encontrado.");
-    return;
-  }
-  const tipo = document.getElementById('tipo_coelho').value;
+      if (!id) {
+        alert("ID do coelho não encontrado.");
+        return;
+      }
 
-  if (tipo === 'Matriz') {
-    window.location.href = `index_matriz.html?id=${id}`;
-  } else if (tipo === 'Reprodutor') {
-    window.location.href = `index_reprodutor.html?id=${id}`;
-  } else {
-    alert('Tipo de coelho desconhecido.');
-  }
-}
+      const tipo = document.getElementById('tipo_coelho').value;
+
+      // If this is a Matriz, open the matrizes (partos) list for that coelho.
+      // If it's a Reprodutor, open the reprodutor (cruzamentos) list.
+      if (tipo === 'Matriz') {
+        window.location.href = `index_matriz.html?coelho_id=${id}`;
+      } else if (tipo === 'Reprodutor') {
+        window.location.href = `index_reprodutor.html?coelho_id=${id}`;
+      } else {
+        alert('Tipo de coelho desconhecido.');
+      }
+    }
 
   </script>
 </head>
@@ -97,6 +100,14 @@
             <input type="number" id="matriz_coelho" name="matriz_coelho" readonly >
           </label>
 
+          <label for="situacao_coelho">Situação
+            <input type="text" id="situacao_coelho" name="situacao_coelho" readonly>
+          </label>
+
+          <label for="transferido_coelho">Transferido Para (ID)
+            <input type="text" id="transferido_coelho" name="transferido_coelho" readonly>
+          </label>
+
           <label for="reprodutor_coelho">Reprodutor
             <input type="number" id="reprodutor_coelho" name="reprodutor_coelho" readonly>
           </label>
@@ -109,8 +120,9 @@
 
         <div class="buttons">
           <button class="back" type="button" onclick="clicarbotao2()">Editar</button>
-          <button class="back" type="button" onclick="clicarbotao()">Voltar</button>    
-        </div>
+          <button class="back" type="button" onclick="clicarbotao3()">Cruzamentos</button>
+          <button class="back" type="button" onclick="clicarbotao()">Voltar</button>
+     </div>
       </div>
     </div>
   </div>

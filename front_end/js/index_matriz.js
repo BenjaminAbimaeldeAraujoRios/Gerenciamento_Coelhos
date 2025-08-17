@@ -1,14 +1,18 @@
 const apiurl = "http://localhost:3000";
 
-document.addEventListener('DOMContentLoaded', () => {
-  fetch(apiurl + '/matriz')
+function initMatrizesPage() {
+  console.log('index_matriz.js init, document.readyState=', document.readyState);
+  const params = new URLSearchParams(window.location.search);
+  const coelhoId = params.get('coelho_id') || params.get('id') || null; // prefer explicit coelho_id
+  const fetchUrl = apiurl + '/matriz' + (coelhoId ? `?coelho_id=${coelhoId}` : '');
+  console.log('Fetching matrizes from', fetchUrl);
+  fetch(fetchUrl)
     .then(res => {
       console.log('Status:', res.status);
       return res.text();
     })
     .then(text => {
       console.log('Texto recebido:', text);
-     
       if (text) {
         return JSON.parse(text);
       } else {
@@ -27,7 +31,14 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Erro ao carregar matrizes:', err);
       mostrarSemDados();
     });
-});
+}
+
+// ensure initialization runs whether DOMContentLoaded already fired or not
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMatrizesPage);
+} else {
+  initMatrizesPage();
+}
 
 function preencherTabela(matrizes) {
   const tbody = document.getElementById('matrizTableBody');
@@ -43,19 +54,34 @@ function preencherTabela(matrizes) {
       <td>${matriz.peso_total_ninhada || '-'}</td>
       <td>${matriz.numero_reprodutor || '-'}</td>
     `;
-    selecionarLinha(tr, matriz.id_matriz, 'ficha_matriz.html');
+    const params = new URLSearchParams(window.location.search);
+    const coelhoId = params.get('coelho_id') || params.get('id') || null;
+    const coelhoParam = coelhoId ? `?coelho_id=${coelhoId}` : '';
+    selecionarLinha(tr, matriz.id_matriz, 'ficha_matriz.html' + coelhoParam);
     tbody.appendChild(tr);
   });
 }
 
-
-
 function selecionarLinha(tr, id, pagina) {
   tr.style.cursor = 'pointer';
   tr.addEventListener('click', () => {
-    window.location.href = `${pagina}?id=${id}`;
+    // se já tiver "?" usa "&", senão usa "?"
+    const separador = pagina.includes('?') ? '&' : '?';
+    window.location.href = `${pagina}${separador}id=${id}`;
   });
 }
 
+// handle Add button preserving the coelho id when present
+{
+  const params = new URLSearchParams(window.location.search);
+  const coelhoId = params.get('coelho_id') || params.get('id') || null;
+  const btn = document.getElementById('btnAdicionar');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const target = 'adicionar_matriz.html' + (coelhoId ? `?coelho_id=${coelhoId}` : '');
+      window.location.href = target;
+    });
+  }
+}
 
 

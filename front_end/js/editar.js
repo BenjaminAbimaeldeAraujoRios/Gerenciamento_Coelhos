@@ -26,6 +26,8 @@ window.onload = async () => {
     document.getElementById("nome_coelho").value = coelho.nome_coelho || "";
     document.getElementById("sexo_coelho").value = coelho.sexo_coelho || "";
     document.getElementById("tipo_coelho").value = coelho.tipo_coelho || "";
+  document.getElementById("situacao_coelho").value = coelho.situacao_coelho || coelho.situacao || "ativo";
+  document.getElementById("transferido_coelho").value = coelho.transferido_coelho || "";
     document.getElementById("matriz_coelho").value = coelho.matriz_coelho || "";
     document.getElementById("reprodutor_coelho").value = coelho.reprodutor_coelho || "";
     document.getElementById("observacoes_coelho").value = coelho.observacoes_coelho || "";
@@ -49,7 +51,9 @@ async function salvaralteracao() {
     tipo_coelho: document.getElementById("tipo_coelho").value,
     matriz_coelho: document.getElementById("matriz_coelho").value,
     reprodutor_coelho: document.getElementById("reprodutor_coelho").value,
-    observacoes_coelho: document.getElementById("observacoes_coelho").value,
+  observacoes_coelho: document.getElementById("observacoes_coelho").value,
+  situacao_coelho: document.getElementById("situacao_coelho").value,
+  transferido_coelho: document.getElementById("transferido_coelho").value || null,
   };
 
   try {

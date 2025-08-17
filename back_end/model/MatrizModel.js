@@ -1,110 +1,99 @@
-// model/MatrizModel.js
 const Database = require('../database');
 
 class Matriz {
-  async adicionarMatriz(matriz) {
+  // Insere um registro de matriz (parto)
+  async insertMatriz(matriz) {
+    if (!matriz || !matriz.id_coelho) {
+      throw new Error('Matriz.insertMatriz: id_coelho (pai) é obrigatório');
+    }
     const sql = `
       INSERT INTO matriz (
+        id_coelho,
         data_parto,
         laparos,
         laparos_mortos,
         laparos_transferidos,
         peso_total_ninhada,
-        id_controle,
         numero_reprodutor
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7)
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7)
+      RETURNING id_matriz
     `;
     const res = await Database.query(sql, [
+      matriz.id_coelho,
       matriz.data_parto,
       matriz.laparos,
       matriz.laparos_mortos,
       matriz.laparos_transferidos,
       matriz.peso_total_ninhada,
-      matriz.id_controle,
-      matriz.numero_reprodutor
+      matriz.numero_reprodutor || null
     ]);
-    return res; 
+    return res && res[0] ? res[0] : null;
   }
 
-  async listarMatrizes() {
-    try {
-      const sql = `
-        SELECT
-          m.*,
-          c.data_cruzamento,
-          mae.nome_coelho AS nome_matriz,
-          pai.nome_coelho AS nome_reprodutor
-        FROM matriz m
-        LEFT JOIN cruzamento c ON m.id_controle = c.id_controle
-        LEFT JOIN coelho mae ON c.matriz_coelho = mae.id_coelho
-        LEFT JOIN coelho pai ON c.reprodutor_coelho = pai.id_coelho
-      `;
-      const res = await Database.query(sql);
-
-     
-      console.log('>> Retorno completo de Database.query (listarMatrizes):', res);
-
-      
-      return res;
-
-    } catch (error) {
-      console.error('Erro no listarMatrizes:', error);
-      throw error;
-    }
+  // Seleciona todas as matrizes
+  async selectMatrizes(coelhoId = null) {
+  // Ordena por data do parto (mais recente primeiro). Se coelhoId fornecido, filtra por id_coelho.
+  try {
+      // Only filter when coelhoId is a real number (not null and not NaN).
+      if (coelhoId !== null && !Number.isNaN(coelhoId)) {
+        const sql = `SELECT * FROM matriz WHERE id_coelho=$1 ORDER BY data_parto DESC`;
+        const res = await Database.query(sql, [coelhoId]);
+        return res || [];
+      } else {
+        // No valid coelhoId provided; return all matrizes
+        console.log('MatrizModel.selectMatrizes: no valid coelhoId provided, returning all records');
+        const sql = `SELECT * FROM matriz ORDER BY data_parto DESC`;
+        const res = await Database.query(sql);
+        return res || []; // Database.query retorna array de rows
+      }
+  } catch (error) {
+    console.error('MatrizModel.selectMatrizes error:', error && error.stack ? error.stack : error);
+    throw error;
+  }
   }
 
-  async selecionarMatrizPorId(id) {
-    const sql = `
-      SELECT
-        m.*,
-        c.data_cruzamento,
-        mae.nome_coelho AS nome_matriz,
-        pai.nome_coelho AS nome_reprodutor
-      FROM matriz m
-      LEFT JOIN cruzamento c ON m.id_controle = c.id_controle
-      LEFT JOIN coelho mae ON c.matriz_coelho = mae.id_coelho
-      LEFT JOIN coelho pai ON c.reprodutor_coelho = pai.id_coelho
-      WHERE m.id_matriz = $1
-    `;
+  // Seleciona uma matriz por ID
+  async selectMatrizPorId(id) {
+    const sql = `SELECT * FROM matriz WHERE id_matriz = $1`;
     const res = await Database.query(sql, [id]);
-    
-    return res[0]; 
+  return res && res[0] ? res[0] : null;
   }
 
-  async atualizarMatriz(id, matriz) {
+  // Atualiza um registro de matriz
+  async updateMatriz(id, matriz) {
     const sql = `
       UPDATE matriz SET
-        data_parto = $1,
-        laparos = $2,
-        laparos_mortos = $3,
-        laparos_transferidos = $4,
-        peso_total_ninhada = $5,
-        id_controle = $6,
-        numero_reprodutor = $7
-      WHERE id_matriz = $8
+        id_coelho=$1,
+        data_parto=$2,
+        laparos=$3,
+        laparos_mortos=$4,
+        laparos_transferidos=$5,
+        peso_total_ninhada=$6,
+        numero_reprodutor=$7
+      WHERE id_matriz=$8
+      RETURNING *
     `;
     const res = await Database.query(sql, [
+      matriz.id_coelho,
       matriz.data_parto,
       matriz.laparos,
       matriz.laparos_mortos,
       matriz.laparos_transferidos,
       matriz.peso_total_ninhada,
-      matriz.id_controle,
-      matriz.numero_reprodutor,
+      matriz.numero_reprodutor || null,
       id
     ]);
-    return res; 
+    return res && res[0] ? res[0] : null;
   }
 
-  async excluirMatriz(id) {
-    const sql = "DELETE FROM matriz WHERE id_matriz = $1";
-    const res = await Database.query(sql, [id]);
-    return res; 
+  // Exclui um registro de matriz
+  async deleteMatriz(id) {
+    const sql = `DELETE FROM matriz WHERE id_matriz=$1`;
+    await Database.query(sql, [id]);
+    return true;
   }
 }
 
 module.exports = {
-  Matriz,
-
+  Matriz
 };
-

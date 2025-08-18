@@ -1,114 +1,87 @@
 const Database = require('../database');
 
 class Reprodutor {
+  // Adiciona um novo reprodutor
   async adicionarReprodutor(reprodutor) {
-    // Ajuste: alguns bancos têm a coluna 'id_coelho' em vez de 'numero_matriz'.
-    // Aceitamos payloads com 'numero_matriz' e os mapeamos para 'id_coelho' ao inserir.
     const sql = `
       INSERT INTO reprodutor (
+        id_coelho,
         data_acasalamento,
         numero_laparos,
         peso_total_ninhada,
-        id_coelho
-      ) VALUES ($1, $2, $3, $4)
+        numero_matriz
+      ) VALUES ($1, $2, $3, $4, $5)
       RETURNING id_reprodutor
     `;
-    try {
-  const idCoelhoRaw = reprodutor.id_coelho || reprodutor.numero_matriz || null;
-  if (!idCoelhoRaw) throw new Error('Reprodutor.adicionarReprodutor: id_coelho (matriz pai) é obrigatório');
-  const idCoelho = parseInt(idCoelhoRaw, 10);
-      const res = await Database.query(sql, [
-        reprodutor.data_acasalamento,
-        reprodutor.numero_laparos,
-        reprodutor.peso_total_ninhada || null,
-        idCoelho
-      ]);
-      return res && res[0] ? res[0] : null;
-    } catch (error) {
-      console.error('Erro ao adicionar reprodutor:', error);
-      throw error;
-    }
+    const res = await Database.query(sql, [
+      reprodutor.id_coelho,
+      reprodutor.data_acasalamento,
+      reprodutor.numero_laparos,
+      reprodutor.peso_total_ninhada,
+      reprodutor.numero_matriz
+    ]);
+    return res && res[0] ? res[0] : null;
   }
 
-  // agora aceita filtro opcional por coelho (id da matriz) para retornar apenas os reprodutores relacionados
+  // Lista todos os reprodutores
   async listarReprodutores(coelhoId = null) {
+    console.log('ReprodutorModel.listarReprodutores chamado com coelhoId:', coelhoId);
+    
     try {
-      const baseSql = `
-        SELECT r.*, mae.nome_coelho AS nome_matriz
-        FROM reprodutor r
-        LEFT JOIN coelho mae ON r.id_coelho = mae.id_coelho
-      `;
-      let sql;
-      let params = [];
-      if (coelhoId) {
-        sql = baseSql + ` WHERE r.id_coelho = $1 ORDER BY r.data_acasalamento DESC NULLS LAST`;
-        params = [coelhoId];
+      if (coelhoId !== null && !Number.isNaN(coelhoId)) {
+        console.log('Filtrando por coelhoId:', coelhoId);
+        const sql = `SELECT * FROM reprodutor WHERE id_coelho=$1 ORDER BY data_acasalamento DESC`;
+        const res = await Database.query(sql, [coelhoId]);
+        console.log('Resultado filtrado:', res ? res.length : 0, 'registros');
+        return res || [];
       } else {
-        sql = baseSql + ` ORDER BY r.data_acasalamento DESC NULLS LAST`;
+        console.log('Listando todos os reprodutores');
+        const sql = `SELECT * FROM reprodutor ORDER BY data_acasalamento DESC`;
+        const res = await Database.query(sql);
+        console.log('Resultado total:', res ? res.length : 0, 'registros');
+        return res || [];
       }
-      const res = await Database.query(sql, params);
-      console.log('MODEL - ReprodutorModel.listarReprodutores: rows count =', Array.isArray(res) ? res.length : 0, 'filter coelhoId=', coelhoId);
-      return res; // retorna array de rows
     } catch (error) {
-      console.error('Erro no listarReprodutores:', error && error.stack ? error.stack : error);
+      console.error('Erro em listarReprodutores:', error);
       throw error;
     }
   }
 
+  // Seleciona um reprodutor por ID
+  async selecionarReprodutorPorId(id) {
+    const sql = `SELECT * FROM reprodutor WHERE id_reprodutor = $1`;
+    const res = await Database.query(sql, [id]);
+    return res && res[0] ? res[0] : null;
+  }
+
+  // Atualiza um reprodutor
   async atualizarReprodutor(id, reprodutor) {
-    // Você precisará implementar esta função no seu modelo se ainda não o fez
-    // e se a rota PATCH /reprodutor/:id estiver sendo usada.
-    // Seus campos de atualização podem ser diferentes.
     const sql = `
       UPDATE reprodutor SET
-        data_acasalamento = $1,
-        numero_laparos = $2,
-        peso_total_ninhada = $3,
-        id_coelho = $4
-      WHERE id_reprodutor = $5
+        id_coelho = $1,
+        data_acasalamento = $2,
+        numero_laparos = $3,
+        peso_total_ninhada = $4,
+        numero_matriz = $5
+      WHERE id_reprodutor = $6
       RETURNING *
     `;
-    try {
-      const idCoelho = reprodutor.id_coelho || reprodutor.numero_matriz || null;
-      const res = await Database.query(sql, [
-        reprodutor.data_acasalamento,
-        reprodutor.numero_laparos,
-        reprodutor.peso_total_ninhada,
-        idCoelho,
-        id
-      ]);
-      return res && res[0] ? res[0] : null;
-    } catch (error) {
-      console.error('Erro ao atualizar reprodutor:', error);
-      throw error;
-    }
+    const res = await Database.query(sql, [
+      reprodutor.id_coelho,
+      reprodutor.data_acasalamento,
+      reprodutor.numero_laparos,
+      reprodutor.peso_total_ninhada,
+      reprodutor.numero_matriz,
+      id
+    ]);
+    return res && res[0] ? res[0] : null;
   }
 
-  async selecionarReprodutorPorId(id) {
-    try {
-      const sql = `
-        SELECT r.*, mae.nome_coelho AS nome_matriz
-        FROM reprodutor r
-        LEFT JOIN coelho mae ON r.id_coelho = mae.id_coelho
-        WHERE r.id_reprodutor = $1
-      `;
-      const res = await Database.query(sql, [id]);
-  return res && res[0] ? res[0] : null;
-    } catch (error) {
-      console.error('Erro ao selecionar reprodutor por id:', error);
-      throw error;
-    }
-  }
-
+  // Exclui um reprodutor
   async excluirReprodutor(id) {
-    try {
-      const sql = "DELETE FROM reprodutor WHERE id_reprodutor = $1";
-      const res = await Database.query(sql, [id]);
-      return res;
-    } catch (error) {
-      console.error('Erro ao excluir reprodutor:', error);
-      throw error;
-    }
+    const sql = `DELETE FROM reprodutor WHERE id_reprodutor = $1`;
+    await Database.query(sql, [id]);
+    return true;
   }
 }
 

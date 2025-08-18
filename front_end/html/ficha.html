@@ -96,25 +96,30 @@
          </select>
          </label>
 
-        <label for="matriz_coelho">Matriz
-            <input type="number" id="matriz_coelho" name="matriz_coelho" readonly >
-          </label>
 
           <label for="situacao_coelho">Situação
-            <input type="text" id="situacao_coelho" name="situacao_coelho" readonly>
+           <select id="situacao_coelho" name="situacao_coelho" required>
+             <option value="ativo">Ativo</option>
+             <option value="inativo">Inativo</option>
+             <option value="transferido">Transferido</option>
+           </select>
+         </label>
+
+          <label for="transferido_coelho">Transferido Para
+            <input type="text" id="transferido_coelho" name="transferido_coelho" readonly>
           </label>
 
-          <label for="transferido_coelho">Transferido Para (ID)
-            <input type="text" id="transferido_coelho" name="transferido_coelho" readonly>
+          <label for="matriz_coelho">Matriz
+            <input type="number" id="matriz_coelho" name="matriz_coelho" readonly >
           </label>
 
           <label for="reprodutor_coelho">Reprodutor
             <input type="number" id="reprodutor_coelho" name="reprodutor_coelho" readonly>
           </label>
 
-        <label for="observacoes_coelho">Observações
+       <label for="observacoes_coelho">Observações
           <textarea id="observacoes_coelho" name="observacoes_coelho" readonly rows="4"></textarea>
-        </label>
+         </label>
 
         <input type="hidden" id="id_usuario" name="id_usuario">
 

@@ -213,6 +213,16 @@ app.patch('/matriz/:id', async (req, res) => {
   }
 });
 
+app.delete('/matriz/:id', async (req, res) => {
+  try {
+    await MatrizRota.deleteMatriz(req.params.id);
+    res.sendStatus(204);
+  } catch (error) {
+    console.error('Erro ao excluir matriz:', error);
+    res.status(500).json({ erro: 'Erro interno' });
+  }
+});
+
   // Reprodutor
  app.post('/reprodutor', async (req, res) => {
     try {
@@ -231,19 +241,18 @@ app.patch('/matriz/:id', async (req, res) => {
   });
 
   app.get('/reprodutor', async (req, res) => {
-  console.log('ENTER /reprodutor');
+    console.log('GET /reprodutor - query params:', req.query);
     try {
-  // accept either ?coelho_id= or ?id=
-  let coelhoIdRaw = req.query.coelho_id || req.query.id || null;
-  const coelhoId = coelhoIdRaw ? parseInt(coelhoIdRaw, 10) : null;
-  console.log('DEBUG /reprodutor - received coelhoIdRaw:', coelhoIdRaw, 'parsed:', coelhoId);
-  const reprodutores = await ReprodutorRota.listarReprodutores(coelhoId);
-      // >>> ADICIONE ESTE LOG AQUI <<<
-  console.log('DEBUG /reprodutor - type:', typeof reprodutores, 'isArray:', Array.isArray(reprodutores));
-  console.log('DEBUG /reprodutor - sample:', reprodutores && reprodutores.length ? reprodutores[0] : reprodutores);
-  res.json(reprodutores);
+      // accept either ?coelho_id= or ?id=
+      let coelhoIdRaw = req.query.coelho_id || req.query.id || null;
+      const coelhoId = coelhoIdRaw ? parseInt(coelhoIdRaw, 10) : null;
+      console.log('GET /reprodutor - coelhoIdRaw:', coelhoIdRaw, 'parsed:', coelhoId);
+      
+      const reprodutores = await ReprodutorRota.listarReprodutores(coelhoId);
+      console.log('GET /reprodutor - retornando:', reprodutores ? reprodutores.length : 0, 'reprodutores');
+      res.json(reprodutores);
     } catch (error) {
-      console.error('Erro ao buscar reprodutores:', error && error.stack ? error.stack : error);
+      console.error('Erro ao buscar reprodutores:', error);
       res.status(500).json({ erro: 'Erro interno' });
     }
   });

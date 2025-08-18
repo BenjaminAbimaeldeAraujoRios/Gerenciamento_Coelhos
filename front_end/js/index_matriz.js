@@ -54,20 +54,24 @@ function preencherTabela(matrizes) {
       <td>${matriz.peso_total_ninhada || '-'}</td>
       <td>${matriz.numero_reprodutor || '-'}</td>
     `;
+    // Construir URL com ambos os IDs: o da matriz (id_matriz) e o do coelho pai (coelho_id)
     const params = new URLSearchParams(window.location.search);
     const coelhoId = params.get('coelho_id') || params.get('id') || null;
-    const coelhoParam = coelhoId ? `?coelho_id=${coelhoId}` : '';
-    selecionarLinha(tr, matriz.id_matriz, 'ficha_matriz.html' + coelhoParam);
+    // Construir URL base com id da matriz
+    let url = `ficha_matriz.html?id_matriz=${matriz.id_matriz}`;
+    // Adicionar coelho_id se existir
+    if (coelhoId) {
+      url += `&coelho_id=${coelhoId}`;
+    }
+    selecionarLinha(tr, url);
     tbody.appendChild(tr);
   });
 }
 
-function selecionarLinha(tr, id, pagina) {
+function selecionarLinha(tr, url) {
   tr.style.cursor = 'pointer';
   tr.addEventListener('click', () => {
-    // se já tiver "?" usa "&", senão usa "?"
-    const separador = pagina.includes('?') ? '&' : '?';
-    window.location.href = `${pagina}${separador}id=${id}`;
+    window.location.href = url;
   });
 }
 

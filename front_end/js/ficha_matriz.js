@@ -1,10 +1,10 @@
 const apiurl = 'http://localhost:3000';
 const params = new URLSearchParams(window.location.search);
-const id = params.get('id');
+const id = params.get('id_matriz') || params.get('id'); // aceita ambos id_matriz ou id
 const coelhoId = params.get('coelho_id') || null;
 
 if (!id) {
-  alert('Nenhum ID fornecido.');
+  alert('ID da matriz não fornecido.');
   window.history.back();
 }
 
@@ -32,15 +32,46 @@ function editar(){
   window.location.href = `adicionar_matriz.html?id=${id}${coelhoId ? `&coelho_id=${coelhoId}` : ''}`;
 }
 
-async function excluir(){
+async function excluir() {
   if (!confirm('Confirmar exclusão?')) return;
-  try{
-    const res = await fetch(`${apiurl}/matriz/${id}`, { method: 'DELETE' });
-    if (res.ok) window.location.href = `index_matriz.html${coelhoId ? `?coelho_id=${coelhoId}` : ''}`;
-    else alert('Erro ao excluir.');
-  }catch(err){
-    console.error(err);
-    alert('Erro ao conectar com servidor.');
+
+  // Usar o id que já foi validado no início do arquivo
+  // em vez de pegar novamente dos parâmetros
+  if (!id) {
+    console.error('ID ausente na exclusão, id=', id);
+    alert('ID da matriz não encontrado.');
+    return;
+  }
+
+  try {
+    console.log('Tentando excluir matriz id=', id);
+    const url = `${apiurl}/matriz/${encodeURIComponent(id)}`;
+    console.log('DELETE', url);
+    
+    const res = await fetch(url, { 
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    // Tentar ler o corpo da resposta para mais detalhes
+    let errorDetail = '';
+    try {
+      const text = await res.text();
+      if (text) errorDetail = ': ' + text;
+    } catch(e) {}
+    
+    console.log('Status da exclusão:', res.status, errorDetail);
+    
+    if (res.ok) {
+      window.location.href = `index_matriz.html${coelhoId ? `?coelho_id=${coelhoId}` : ''}`;
+    } else {
+      alert(`Erro ao excluir matriz (status ${res.status})${errorDetail}`);
+    }
+  } catch (err) {
+    console.error('Erro na exclusão:', err);
+    alert('Erro ao conectar com servidor: ' + (err.message || err));
   }
 }
 

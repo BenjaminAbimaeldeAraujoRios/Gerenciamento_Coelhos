@@ -6,16 +6,24 @@ const coelhoId = params.get('coelho_id') || null;
 if (!id) { alert('Nenhum ID'); window.history.back(); }
 
 window.onload = async () => {
-  try{
+  try {
+    // Carregar dados do reprodutor
     const res = await fetch(`${apiurl}/reprodutor/${id}`);
-    if (!res.ok) throw new Error('Erro');
+    if (!res.ok) throw new Error('Erro ao carregar reprodutor');
     const data = await res.json();
-    const rep = Array.isArray(data)? data[0] : data;
+    const rep = Array.isArray(data) ? data[0] : data;
+
+    // Preencher dados do reprodutor
     document.getElementById('data_acasalamento').value = rep.data_acasalamento ? rep.data_acasalamento.slice(0,10) : '';
     document.getElementById('numero_laparos').value = rep.numero_laparos || '';
     document.getElementById('peso_total_ninhada').value = rep.peso_total_ninhada || '';
-    document.getElementById('nome_matriz').value = rep.nome_matriz || '';
-  }catch(err){console.error(err); alert('Erro ao carregar');}
+    document.getElementById('numero_matriz').value = rep.numero_matriz || '';
+
+    document.getElementById('numero_matriz').value = rep.numero_matriz || '';
+  } catch(err) {
+    console.error(err); 
+    alert('Erro ao carregar dados');
+  }
 }
 
 function editar(){
@@ -24,12 +32,44 @@ function editar(){
 }
 
 async function excluir(){
-  if(!confirm('Confirma?')) return;
-  try{
-    const res = await fetch(`${apiurl}/reprodutor/${id}`, {method:'DELETE'});
-    if(res.ok) window.location.href = `index_reprodutor.html${coelhoId ? `?coelho_id=${coelhoId}` : ''}`;
-    else alert('Erro');
-  }catch(err){console.error(err); alert('Erro');}
+  if(!confirm('Confirmar exclusão?')) return;
+
+  if (!id) {
+    console.error('ID ausente na exclusão, id=', id);
+    alert('ID do reprodutor não encontrado.');
+    return;
+  }
+
+  try {
+    console.log('Tentando excluir reprodutor id=', id);
+    const url = `${apiurl}/reprodutor/${encodeURIComponent(id)}`;
+    console.log('DELETE', url);
+    
+    const res = await fetch(url, { 
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    
+    // Tentar ler o corpo da resposta para mais detalhes
+    let errorDetail = '';
+    try {
+      const text = await res.text();
+      if (text) errorDetail = ': ' + text;
+    } catch(e) {}
+    
+    console.log('Status da exclusão:', res.status, errorDetail);
+    
+    if (res.ok) {
+      window.location.href = `index_reprodutor.html${coelhoId ? `?coelho_id=${coelhoId}` : ''}`;
+    } else {
+      alert(`Erro ao excluir reprodutor (status ${res.status})${errorDetail}`);
+    }
+  } catch (err) {
+    console.error('Erro na exclusão:', err);
+    alert('Erro ao conectar com servidor: ' + (err.message || err));
+  }
 }
 
 function voltar(){

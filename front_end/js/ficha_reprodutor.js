@@ -1,9 +1,12 @@
 const apiurl = 'http://localhost:3000';
 const params = new URLSearchParams(window.location.search);
-const id = params.get('id');
+const id = params.get('id_reprodutor') || params.get('id'); // aceita ambos id_reprodutor ou id
 const coelhoId = params.get('coelho_id') || null;
 
-if (!id) { alert('Nenhum ID'); window.history.back(); }
+if (!id) {
+  alert('ID do reprodutor não fornecido.');
+  window.history.back();
+}
 
 window.onload = async () => {
   try {

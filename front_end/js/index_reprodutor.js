@@ -1,26 +1,26 @@
 const apiurl = "http://localhost:3000";
 
-document.addEventListener('DOMContentLoaded', () => {
+function initReprodutoresPage() {
+  console.log('index_reprodutor.js init, document.readyState=', document.readyState);
   const params = new URLSearchParams(window.location.search);
-  const coelhoId = params.get('id') || params.get('coelho_id') || null;
+  const coelhoId = params.get('coelho_id') || params.get('id') || null; // prefer explicit coelho_id
   const fetchUrl = apiurl + '/reprodutor' + (coelhoId ? `?coelho_id=${coelhoId}` : '');
-  
-  console.log('Carregando reprodutores - URL:', fetchUrl);
-  console.log('coelhoId extraído:', coelhoId);
-  
+  console.log('Fetching reprodutores from', fetchUrl);
   fetch(fetchUrl)
     .then(res => {
-      console.log('Resposta recebida - status:', res.status);
-      if (!res.ok) {
-        throw new Error(`HTTP ${res.status}`);
+      console.log('Status:', res.status);
+      return res.text();
+    })
+    .then(text => {
+      console.log('Texto recebido:', text);
+      if (text) {
+        return JSON.parse(text);
+      } else {
+        throw new Error('Resposta vazia do servidor');
       }
-      return res.json();
     })
     .then(data => {
       console.log('Dados recebidos:', data);
-      console.log('É array?', Array.isArray(data));
-      console.log('Quantidade:', data ? data.length : 0);
-      
       if (Array.isArray(data) && data.length > 0) {
         preencherTabela(data);
       } else {
@@ -31,22 +31,37 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error('Erro ao carregar reprodutores:', err);
       mostrarSemDados();
     });
-});
+}
+
+// ensure initialization runs whether DOMContentLoaded already fired or not
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initReprodutoresPage);
+} else {
+  initReprodutoresPage();
+}
 
 function preencherTabela(reprodutores) {
   const tbody = document.getElementById('reprodutorTableBody');
   tbody.innerHTML = ''; 
 
-  reprodutores.forEach(rep => {
+  reprodutores.forEach(reprodutor => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${rep.data_acasalamento ? new Date(rep.data_acasalamento).toLocaleDateString('pt-BR') : '-'}</td>
-      <td>${rep.numero_laparos || '-'}</td>
-      <td>${rep.peso_total_ninhada || '-'}</td>
-      <td>${rep.numero_matriz || '-'}</td>
+      <td>${reprodutor.data_acasalamento ? new Date(reprodutor.data_acasalamento).toLocaleDateString('pt-BR') : '-'}</td>
+      <td>${reprodutor.numero_laparos || '-'}</td>
+      <td>${reprodutor.peso_total_ninhada || '-'}</td>
+      <td>${reprodutor.numero_matriz || '-'}</td>
     `;
-    
-    selecionarLinha(tr, rep.id_reprodutor, 'ficha_reprodutor.html'); 
+    // Construir URL com ambos os IDs: o do reprodutor (id_reprodutor) e o do coelho pai (coelho_id)
+    const params = new URLSearchParams(window.location.search);
+    const coelhoId = params.get('coelho_id') || params.get('id') || null;
+    // Construir URL base com id do reprodutor
+    let url = `ficha_reprodutor.html?id_reprodutor=${reprodutor.id_reprodutor}`;
+    // Adicionar coelho_id se existir
+    if (coelhoId) {
+      url += `&coelho_id=${coelhoId}`;
+    }
+    selecionarLinha(tr, url);
     tbody.appendChild(tr);
   });
 }
@@ -56,9 +71,22 @@ function mostrarSemDados() {
   tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Nenhum dado encontrado.</td></tr>`;
 }
 
-function selecionarLinha(tr, id, pagina) {
+function selecionarLinha(tr, url) {
   tr.style.cursor = 'pointer';
   tr.addEventListener('click', () => {
-    window.location.href = `${pagina}?id=${id}`;
+    window.location.href = url;
   });
+}
+
+// handle Add button preserving the coelho id when present
+{
+  const params = new URLSearchParams(window.location.search);
+  const coelhoId = params.get('coelho_id') || params.get('id') || null;
+  const btn = document.getElementById('btnAdicionar');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const target = 'adicionar_reprodutor.html' + (coelhoId ? `?coelho_id=${coelhoId}` : '');
+      window.location.href = target;
+    });
+  }
 }

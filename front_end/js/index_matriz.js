@@ -1,18 +1,14 @@
 const apiurl = "http://localhost:3000";
 
 function initMatrizesPage() {
-  console.log('index_matriz.js init, document.readyState=', document.readyState);
   const params = new URLSearchParams(window.location.search);
   const coelhoId = params.get('coelho_id') || params.get('id') || null; // prefer explicit coelho_id
   const fetchUrl = apiurl + '/matriz' + (coelhoId ? `?coelho_id=${coelhoId}` : '');
-  console.log('Fetching matrizes from', fetchUrl);
   fetch(fetchUrl)
     .then(res => {
-      console.log('Status:', res.status);
       return res.text();
     })
     .then(text => {
-      console.log('Texto recebido:', text);
       if (text) {
         return JSON.parse(text);
       } else {
@@ -20,7 +16,6 @@ function initMatrizesPage() {
       }
     })
     .then(data => {
-      console.log('Dados recebidos:', data);
       if (Array.isArray(data) && data.length > 0) {
         preencherTabela(data);
       } else {
@@ -28,7 +23,6 @@ function initMatrizesPage() {
       }
     })
     .catch(err => {
-      console.error('Erro ao carregar matrizes:', err);
       mostrarSemDados();
     });
 }

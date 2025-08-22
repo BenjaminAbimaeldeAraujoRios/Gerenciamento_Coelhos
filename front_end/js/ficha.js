@@ -34,13 +34,11 @@ window.onload = async () => {
 
   } catch (err) {
     alert("Erro ao carregar dados do coelho.");
-    console.error(err);
   }
 };
 
 function esconderbotaolaparo() {
   const tipo = document.getElementById("tipo_coelho")?.value || '';
-  // normaliza para comparar sem acento e sem maiúsculas
   const normalizado = tipo
     .normalize('NFD')
     .replace(/\p{Diacritic}/gu, '')

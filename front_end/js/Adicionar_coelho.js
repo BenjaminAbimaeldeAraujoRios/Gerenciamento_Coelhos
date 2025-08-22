@@ -42,6 +42,5 @@ async function adicionarCoelho() {
     }
   } catch (err) {
     alert('Erro ao conectar com o servidor.');
-    console.error(err);
   }
 }

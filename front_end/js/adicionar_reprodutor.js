@@ -5,14 +5,11 @@ let coelhoId = params.get('coelho_id');
 
 window.onload = async () => {
   if (id) {
-    // editar
     try {
       const res = await fetch(`${apiurl}/reprodutor/${id}`);
       const data = await res.json();
       const reprodutor = Array.isArray(data) ? data[0] : data;
-      // ensure we know the parent coelho when editing so PATCH includes id_coelho
       if (!coelhoId && reprodutor && reprodutor.id_coelho) coelhoId = reprodutor.id_coelho;
-  // change Back button to Cancelar in edit mode
   const btnVoltar = document.getElementById('btnVoltar');
   if (btnVoltar) btnVoltar.textContent = 'Cancelar';
       
@@ -20,8 +17,7 @@ window.onload = async () => {
       document.getElementById('numero_laparos').value = reprodutor.numero_laparos || '';
       document.getElementById('peso_total_ninhada').value = reprodutor.peso_total_ninhada || '';
       document.getElementById('numero_matriz').value = reprodutor.numero_matriz || '';
-    } catch(err) { 
-      console.error(err);
+  } catch(err) { 
       alert('Erro ao carregar dados');
     }
   }
@@ -65,17 +61,14 @@ async function salvar() {
       }
     }
   } catch(err) { 
-    console.error(err); 
     alert('Erro de conexão'); 
   }
 }
 
 function voltar(){
-  // In edit mode, confirm before leaving to avoid losing unsaved changes
   if (id) {
     if (!confirm('Deseja sair? Suas alterações não serão salvas.')) return;
   }
-  // keep the coelho filter when returning
   if (coelhoId) window.location.href = `index_reprodutor.html?coelho_id=${coelhoId}`;
   else window.history.back();
 }

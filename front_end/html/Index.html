@@ -7,27 +7,41 @@
   <link rel="stylesheet" href="/front_end/css/index_styles.css" />
   <script>
     function clicarbotao() {
-      window.location.href = 'adicionar_coelho.html';
+  window.location.href = 'Adicionar_coelho.html';
     }
   </script>
 </head>
 <body>
   <div class="container">
-    <div class="tabs">
-      <button class="tab active" id="matrizesTab">Matrizes</button>
-      <button class="tab" id="reprodutoresTab">Reprodutores</button>
-      <button class="tab" id="laparosTab">Láparos</button>
+    
 
-
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Procurar..." />
+        </div>
+        <div class="filter-box">
+          <select id="typeFilter">
+            <option value="Matriz">Matrizes</option>
+            <option value="Reprodutor">Reprodutores</option>
+            <option value="Láparo">Láparos</option>
+          </select>
+        </div>
+        <div class="filter-box">
+          <select id="statusFilter">
+            
+            <option value="ativo">Ativos</option>
+            <option value="inativo">Inativos</option>
+            <option value="transferido">Transferidos</option>
+          </select>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <div class="add-button">
+          <button onclick="clicarbotao()">Adicionar</button>
+        </div>
+      </div>
     </div>
-
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Procurar..." />
-    </div>
-
-<div>
-
-  </div>
 
 
     <table>
@@ -43,9 +57,6 @@
       <tbody id="coelhoTableBody"></tbody>
     </table>
 
-    <div class="add-button">
-      <button onclick="clicarbotao()">Adicionar</button>
-    </div>
   </div>
 
   <script src="/front_end/js/index.js"></script>

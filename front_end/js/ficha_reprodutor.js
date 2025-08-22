@@ -24,7 +24,6 @@ window.onload = async () => {
 
     document.getElementById('numero_matriz').value = rep.numero_matriz || '';
   } catch(err) {
-    console.error(err); 
     alert('Erro ao carregar dados');
   }
 }
@@ -38,15 +37,12 @@ async function excluir(){
   if(!confirm('Confirmar exclusão?')) return;
 
   if (!id) {
-    console.error('ID ausente na exclusão, id=', id);
     alert('ID do reprodutor não encontrado.');
     return;
   }
 
   try {
-    console.log('Tentando excluir reprodutor id=', id);
     const url = `${apiurl}/reprodutor/${encodeURIComponent(id)}`;
-    console.log('DELETE', url);
     
     const res = await fetch(url, { 
       method: 'DELETE',
@@ -62,7 +58,7 @@ async function excluir(){
       if (text) errorDetail = ': ' + text;
     } catch(e) {}
     
-    console.log('Status da exclusão:', res.status, errorDetail);
+    
     
     if (res.ok) {
       alert('Registro de reprodutor excluído com sucesso.');
@@ -71,7 +67,6 @@ async function excluir(){
       alert(`Erro ao excluir reprodutor (status ${res.status})${errorDetail}`);
     }
   } catch (err) {
-    console.error('Erro na exclusão:', err);
     alert('Erro ao conectar com servidor: ' + (err.message || err));
   }
 }

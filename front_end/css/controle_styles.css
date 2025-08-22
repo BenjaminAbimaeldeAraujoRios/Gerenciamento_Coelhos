@@ -1,79 +1,104 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* Estilos específicos da página Controle (escopo para evitar interferir nas fichas) */
+
+/* Overlay e modal somente desta página */
+#userFormModal.modal-overlay,
+#confirmModal.modal-overlay {
+	display: none;
+	position: fixed;
+	inset: 0;
+	background: rgba(0,0,0,.4);
+	z-index: 1000;
+	align-items: center;
+	justify-content: center;
+	padding: 12px;
 }
 
-body {
-  font-family: sans-serif;
-  background-color: #67d5b5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+#userFormModal .modal,
+#confirmModal .modal {
+	background: #a0e4c6;
+	border-radius: 10px;
+	padding: 28px;
+	width: 100%;
+	max-width: 760px;
+	box-shadow: 0 10px 30px rgba(0,0,0,.25);
 }
 
-.container {
-  background-color: #a7e6c3;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 800px;
+/* Layout do formulário em duas colunas, similar às fichas */
+#userFormModal .modal .form-box { display: flex; gap: 40px; }
+#userFormModal .modal .left,
+#userFormModal .modal .right { display: flex; flex-direction: column; gap: 10px; }
+#userFormModal .modal label { display: flex; flex-direction: column; font-weight: bold; font-size: 14px; }
+#userFormModal .modal input { margin-top: 4px; padding: 6px; border: none; border-radius: 6px; width: 160px; }
+
+/* Botões do modal */
+#userFormModal .modal .buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+#userFormModal .modal button { padding: 10px; border: none; border-radius: 6px; color: #fff; font-weight: bold; cursor: pointer; }
+#userFormModal .modal .update { background-color: #32a62e; }
+#userFormModal .modal .delete { background-color: #003300; }
+#userFormModal .modal .back { background-color: #005500; }
+
+#userFormModal .modal header,
+#confirmModal .modal header {
+	font-weight: bold;
+	font-size: 18px;
+	margin-bottom: 16px;
+	color: #004d1a;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 
-.tabela-container {
-  background-color: #d0f3e0;
-  padding: 10px;
-  border-radius: 5px;
-  overflow-y: auto;
-  max-height: 300px;
+.message { margin: 0 0 12px 0; padding: 12px; border-radius: 6px; display: none; }
+.message.success { background: #c9f7d1; color: #0b5d1e; display: block; }
+.message.error { background: #ffd6d6; color: #7a2222; display: block; }
+.message.info { background: #daf0ff; color: #154b72; display: block; }
+
+@media (max-width: 640px) {
+	#userFormModal .modal,
+	#confirmModal .modal { max-width: 96vw; padding: 20px; }
+	#userFormModal .modal .form-box { flex-direction: column; gap: 16px; }
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+/* Layout só desta página (não mexe no body global das fichas) */
+body.controle-page { display: block; height: auto; padding: 20px; }
+.controle-container { max-width: 1040px; margin: 0 auto; }
+.controle-container .toolbar { margin-bottom: 16px; }
+.controle-container table th,
+.controle-container table td { padding: 12px; }
 
-thead th {
-  background-color: #4b8460;
-  color: white;
-  text-align: left;
-  padding: 10px;
+/* Inputs do modal: cores padronizadas, sem autofill azul/amarelo */
+#userFormModal .modal .form-box input,
+#userFormModal .modal .form-box select,
+#userFormModal .modal .form-box textarea {
+	background-color: #d8f0e2 !important;
+	border: none;
+	outline: none;
+	color: #000;
 }
+#userFormModal .modal .form-box input::placeholder,
+#userFormModal .modal .form-box textarea::placeholder { color: #555; opacity: .9; }
 
-tbody td {
-  padding: 10px;
-  background-color: #d0f3e0;
-  border-bottom: 2px solid #bdeacb;
+/* Autofill Chrome */
+#userFormModal .modal .form-box input:-webkit-autofill,
+#userFormModal .modal .form-box input:-webkit-autofill:hover,
+#userFormModal .modal .form-box input:-webkit-autofill:focus,
+#userFormModal .modal .form-box select:-webkit-autofill,
+#userFormModal .modal .form-box textarea:-webkit-autofill {
+	-webkit-box-shadow: 0 0 0px 1000px #d8f0e2 inset;
+	-webkit-text-fill-color: #000;
+	transition: background-color 9999s ease-in-out 0s;
 }
-
-.botoes {
-  margin-top: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
+/* Autofill Firefox */
+#userFormModal .modal .form-box input:-moz-autofill,
+#userFormModal .modal .form-box select:-moz-autofill,
+#userFormModal .modal .form-box textarea:-moz-autofill {
+	box-shadow: 0 0 0px 1000px #d8f0e2 inset;
+	-moz-text-fill-color: #000;
 }
-
-.btn {
-  padding: 10px 20px;
-  border: none;
-  color: white;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  width: 180px;
-  text-align: center;
-}
-
-.redefinir {
-  background-color: #3e9c1a;
-}
-
-.bloquear {
-  background-color: #003f1c;
-}
-
-.voltar {
-  background-color: #205a32;
+/* Foco sem azul */
+#userFormModal .modal .form-box input:focus,
+#userFormModal .modal .form-box select:focus,
+#userFormModal .modal .form-box textarea:focus {
+	outline: none;
+	box-shadow: none;
 }

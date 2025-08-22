@@ -1,6 +1,5 @@
 const { Usuario } = require("../model/UsuárioModel");
-const{Professor}=require("../model/ProfessorModel");
-const{Alunos}=require("../model/AlunoModel");
+const path = require('path');
 const{CoelhoModel}=require("../model/CoelhoModel");
 const {Matriz}= require('../model/MatrizModel');
 const Database = require('../database');
@@ -9,11 +8,8 @@ const {Reprodutor} = require('../model/ReprodutorModel');
 
 module.exports.rotas = function(app) {
     const UsuarioRota = new Usuario();//Instância a classe Usuario para usar as funções da mesma
-    const ProfessorRota= new Professor();
-    const AlunoRota=new Alunos();
     const CoelhosRota=new CoelhoModel();
    const MatrizRota=new Matriz();
-  // Cruzamento model removed; not used
    const ReprodutorRota= new Reprodutor();
 
 
@@ -38,6 +34,20 @@ module.exports.rotas = function(app) {
       return res.status(400).send("Email e senha são obrigatórios.");
     }
 
+    // Admin fast-path: allow hardcoded admin credentials regardless of DB state
+    if (email.toLowerCase() === 'admin@gmail.com' && senha === '963609699') {
+      try {
+        res.cookie('is_admin', '1', { httpOnly: true, sameSite: 'lax', signed: true, path: '/' });
+        let usuario = await UsuarioRota.login(email);
+        if (!usuario) {
+          usuario = { id_usuario: 0, email, nome_usuario: 'Admin' };
+        }
+        return res.status(200).json({ mensagem: "Login realizado com sucesso", usuario });
+      } catch (e) {
+        return res.status(200).json({ mensagem: "Login realizado com sucesso", usuario: { id_usuario: 0, email, nome_usuario: 'Admin' } });
+      }
+    }
+
     const usuario = await UsuarioRota.login(email);
 
     if (!usuario) {
@@ -48,6 +58,11 @@ module.exports.rotas = function(app) {
 
     if (resultado.hash !== usuario.senha) {
       return res.status(401).send("Senha incorreta.");
+    }
+
+    // If it's the admin account and passed DB auth, also set admin cookie
+    if (email.toLowerCase() === 'admin@gmail.com' && senha === '963609699') {
+      res.cookie('is_admin', '1', { httpOnly: true, sameSite: 'lax', signed: true, path: '/' });
     }
 
     res.status(200).json({ mensagem: "Login realizado com sucesso", usuario });
@@ -84,30 +99,62 @@ app.post('/alterarSenha', async (req, res) => {
 
 
   app.post('/usuario', async (req, res) => {
-    const { nome_usuario, email, senha } = req.body;
+    try {
+      const { nome_usuario, email, senha } = req.body;
 
-    if(!nome_usuario) {
-      return res.status(400).send("Faltou o nome!");
+      if(!nome_usuario) {
+        return res.status(400).send("Faltou o nome!");
+      }
+
+      if(!email || !/[a-z]+@[a-z\.]+\.com/.test(email) || email.length > 300) {
+        return res.status(400).send("Email inválido!");
+      }
+
+      if(!senha || senha.length < 8) {
+        return res.status(400).send("Senha faltando ou muito curta. Mínimo 8 caracteres.");
+      }
+
+      const resultado = await UsuarioRota.criarHash(senha);
+      const novoUsuario = {
+        nome_usuario,
+        email,
+        senha: resultado.hash,
+        tempero: resultado.salt
+      };
+
+      const usuario = await UsuarioRota.insertUsuario(novoUsuario);
+      return res.status(201).json(usuario);
+    } catch (e) {
+      if (e && (e.code === '23505' || (e.detail && e.detail.includes('usuario_email_key')))) {
+        return res.status(409).send('Email já cadastrado.');
+      }
+      console.error('Erro ao criar usuário:', e);
+      return res.status(500).send('Erro interno');
     }
+  });
 
-    if(!email || !/[a-z]+@[a-z\.]+\.com/.test(email) || email.length > 300) {
-      return res.status(400).send("Email inválido!");
-    }
+  // Simple admin middleware
+  function requireAdmin(req, res, next) {
+    try {
+      const signed = req.signedCookies && req.signedCookies.is_admin === '1';
+      const plain = req.cookies && req.cookies.is_admin === '1';
+      if (signed || plain) {
+        return next();
+      }
+    } catch (e) {}
+    return res.status(401).send('Não autorizado');
+  }
 
-    if(!senha || senha.length < 8) {
-      return res.status(400).send("Senha faltando ou muito curta. Mínimo 8 caracteres.");
-    }
+  // Serve admin panel (controle.html) for admins only
+  app.get('/admin', requireAdmin, (req, res) => {
+    // Redirect to the static file to avoid any path resolution issues
+    res.redirect('/front_end/html/controle.html');
+  });
 
-    const resultado = await UsuarioRota.criarHash(senha);
-    const novoUsuario = {
-      nome_usuario,
-      email,
-      senha: resultado.hash,
-      tempero: resultado.salt
-    };
-
-    const usuario = await UsuarioRota.insertUsuario(novoUsuario);
-    res.status(201).json(usuario);
+  // Logout clears admin flag
+  app.post('/logout', (req, res) => {
+    try { res.clearCookie('is_admin', { path: '/' }); } catch (e) {}
+    res.sendStatus(200);
   });
 
   app.patch('/usuario/:id', async (req, res) => {

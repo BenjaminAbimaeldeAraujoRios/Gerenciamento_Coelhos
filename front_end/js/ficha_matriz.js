@@ -30,7 +30,6 @@ window.onload = async () => {
 
   } catch (err) {
     alert('Erro ao carregar dados.');
-    console.error(err);
   }
 };
 
@@ -44,15 +43,12 @@ async function excluir() {
   // Usar o id que já foi validado no início do arquivo
   // em vez de pegar novamente dos parâmetros
   if (!id) {
-    console.error('ID ausente na exclusão, id=', id);
     alert('ID da matriz não encontrado.');
     return;
   }
 
   try {
-    console.log('Tentando excluir matriz id=', id);
     const url = `${apiurl}/matriz/${encodeURIComponent(id)}`;
-    console.log('DELETE', url);
     
     const res = await fetch(url, { 
       method: 'DELETE',
@@ -68,7 +64,7 @@ async function excluir() {
       if (text) errorDetail = ': ' + text;
     } catch(e) {}
     
-    console.log('Status da exclusão:', res.status, errorDetail);
+    
     
     if (res.ok) {
       alert('Registro de matriz excluído com sucesso.');
@@ -77,7 +73,6 @@ async function excluir() {
       alert(`Erro ao excluir matriz (status ${res.status})${errorDetail}`);
     }
   } catch (err) {
-    console.error('Erro na exclusão:', err);
     alert('Erro ao conectar com servidor: ' + (err.message || err));
   }
 }

@@ -33,16 +33,35 @@ body {
   background-color: #2ecc71;
 }
 
-.search-box {
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   margin-bottom: 10px;
 }
 
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .search-box input {
-  width: 100%;
+  width: 260px;
+  max-width: 40vw;
   padding: 8px;
-  border-radius: 10px;
+  border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 16px;
+}
+
+.filter-box select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  background: #fff;
 }
 
 table {
@@ -64,7 +83,6 @@ th {
 
 .add-button {
   text-align: right;
-  margin-top: 10px;
 }
 
 .add-button button {

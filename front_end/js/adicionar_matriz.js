@@ -5,14 +5,14 @@ let coelhoId = params.get('coelho_id');
 
 window.onload = async () => {
   if (id) {
-    // editar
+    
     try{
       const res = await fetch(`${apiurl}/matriz/${id}`);
       const data = await res.json();
       const matriz = Array.isArray(data)? data[0] : data;
-      // ensure we know the parent coelho when editing so PATCH includes id_coelho
+      
       if (!coelhoId && matriz && matriz.id_coelho) coelhoId = matriz.id_coelho;
-  // change Back button to Cancelar in edit mode
+  
   const btnVoltar = document.getElementById('btnVoltar');
   if (btnVoltar) btnVoltar.textContent = 'Cancelar';
       
@@ -28,7 +28,7 @@ window.onload = async () => {
       document.getElementById('data_desmame').value = matriz.data_desmame ? matriz.data_desmame.slice(0,10) : '';
       document.getElementById('total_desmame').value = matriz.total_desmame || '';
       document.getElementById('numero_reprodutor').value = matriz.numero_reprodutor || '';
-    }catch(err){console.error(err)}
+  }catch(err){}
   }
 }
 
@@ -51,49 +51,39 @@ async function salvar(){
 
   try{
     const targetCoelho = payload.id_coelho || (coelhoId ? parseInt(coelhoId, 10) : null);
-    console.log('adicionar_matriz.js - payload completo:', JSON.stringify(payload, null, 2));
-    console.log('adicionar_matriz.js - targetCoelho:', targetCoelho);
+    
     
     if (id) {
       if (!confirm('Tem certeza que deseja salvar as alterações desta matriz?')) return;
-      console.log('Modo EDIÇÃO - fazendo PATCH para:', `${apiurl}/matriz/${id}`);
       const res = await fetch(`${apiurl}/matriz/${id}`, { method: 'PATCH', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-      console.log('Resposta PATCH:', res.status, res.statusText);
       if (res.ok) {
         alert('Matriz atualizada com sucesso!');
         window.location.href = `index_matriz.html${targetCoelho ? `?coelho_id=${targetCoelho}` : ''}`;
       }
       else {
         const errorText = await res.text();
-        console.error('Erro PATCH:', errorText);
         alert('Erro ao atualizar: ' + errorText);
       }
     } else {
-      console.log('Modo CRIAÇÃO - fazendo POST para:', `${apiurl}/matriz`);
       const res = await fetch(`${apiurl}/matriz`, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-      console.log('Resposta POST:', res.status, res.statusText);
       if (res.ok) {
         alert('Matriz criada com sucesso!');
         window.location.href = `index_matriz.html${targetCoelho ? `?coelho_id=${targetCoelho}` : ''}`;
       }
       else {
         const errorText = await res.text();
-        console.error('Erro POST:', errorText);
         alert('Erro ao adicionar: ' + errorText);
       }
     }
   }catch(err){
-    console.error('Erro na função salvar:', err); 
     alert('Erro de conexão: ' + err.message);
   }
 }
 
 function voltar(){
-  // In edit mode, confirm before leaving to avoid losing unsaved changes
   if (id) {
     if (!confirm('Deseja sair? Suas alterações não serão salvas.')) return;
   }
-  // keep the coelho filter when returning
   if (coelhoId) window.location.href = `index_matriz.html?coelho_id=${coelhoId}`;
   else window.history.back();
 }

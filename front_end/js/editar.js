@@ -13,8 +13,7 @@ window.onload = async () => {
     if (!res.ok) throw new Error("Erro ao buscar coelho: " + res.status);
 
     const data = await res.json();
-    const coelho = Array.isArray(data) ? data[0] : data;
-    console.log("Coelho:", coelho);
+  const coelho = Array.isArray(data) ? data[0] : data;
 
     
     document.getElementById("numero_coelho").value = coelho.numero_coelho || "";
@@ -34,7 +33,6 @@ window.onload = async () => {
 
   } catch (err) {
     alert("Erro ao carregar dados do coelho.");
-    console.error(err);
   }
 };
 
@@ -73,7 +71,6 @@ async function salvaralteracao() {
     
   } catch (err) {
     alert('Falha ao salvar alterações.');
-    console.error(err);
   }
 }
 
@@ -94,6 +91,5 @@ async function deletarcoelho() {
     }
   } catch (err) {
     alert("Erro ao conectar com o servidor.");
-    console.error(err);
   }
 }

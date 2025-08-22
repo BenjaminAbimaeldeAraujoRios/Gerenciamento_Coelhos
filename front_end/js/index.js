@@ -1,73 +1,51 @@
 let todosOsCoelhos = [];
-let tipoAtual = 'Matriz';
-const apiurl="http://localhost:3000"
+const apiurl = "http://localhost:3000";
+
+function normalizeStr(s) {
+  return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  fetch(apiurl+'/coelhos')
+  fetch(apiurl + '/coelhos')
     .then(res => res.json())
     .then(data => {
-      console.log(data)
       todosOsCoelhos = data;
-      filtrarPorTipo(tipoAtual);
+      aplicarFiltros();
     })
-    .catch(err => {
-      console.error('Erro ao carregar coelhos:', err);
-    });
+    .catch(() => {});
 
+  const searchInput = document.getElementById('searchInput');
+  const typeFilter = document.getElementById('typeFilter');
+  const statusFilter = document.getElementById('statusFilter');
 
-
-
-    
-  function ativarBotao(id) {
-    document.querySelectorAll('.tab').forEach(btn => btn.classList.remove('active'));
-    const btn = document.getElementById(id);
-    if (btn) btn.classList.add('active');
-  }
-
-  document.getElementById('matrizesTab').addEventListener('click', () => {
-    ativarBotao('matrizesTab');
-    tipoAtual = 'Matriz';
-    filtrarPorTipo(tipoAtual);
-  });
-
-  document.getElementById('reprodutoresTab').addEventListener('click', () => {
-    ativarBotao('reprodutoresTab');
-    tipoAtual = 'Reprodutor';
-    filtrarPorTipo(tipoAtual);
-  });
-
-  document.getElementById('laparosTab').addEventListener('click', () => {
-    ativarBotao('laparosTab');
-    tipoAtual = 'Láparo';
-    filtrarPorTipo(tipoAtual);
-  });
-
-  document.getElementById('searchInput').addEventListener('input', () => {
-    filtrarPorTipo(tipoAtual);
-  });
+  if (searchInput) searchInput.addEventListener('input', aplicarFiltros);
+  if (typeFilter) typeFilter.addEventListener('change', aplicarFiltros);
+  if (statusFilter) statusFilter.addEventListener('change', aplicarFiltros);
 });
 
-
-
-
-function filtrarPorTipo(tipo) {
+function aplicarFiltros() {
   const tbody = document.getElementById('coelhoTableBody');
-  const busca = document.getElementById('searchInput').value.toLowerCase();
+  const busca = (document.getElementById('searchInput')?.value || '').toLowerCase();
+  const tipo = document.getElementById('typeFilter')?.value || 'Matriz';
+  const status = (document.getElementById('statusFilter')?.value || '').toLowerCase();
   tbody.innerHTML = '';
 
   todosOsCoelhos.forEach(coelho => {
-    if (
-      coelho.tipo_coelho?.toLowerCase() === tipo.toLowerCase() &&
-      (
-        coelho.nome_coelho?.toLowerCase().includes(busca) ||
-        coelho.numero_coelho?.toString().includes(busca) ||
-        coelho.raca_coelho?.toLowerCase().includes(busca)
-      )
-    ) {
+    const tipoOk = normalizeStr(coelho.tipo_coelho) === normalizeStr(tipo);
+    const situacao = (coelho.situacao_coelho || coelho.situacao || '').toLowerCase();
+    const statusOk = !status || situacao === status;
+    const buscaOk = (
+      (coelho.nome_coelho || '').toLowerCase().includes(busca) ||
+      (coelho.numero_coelho != null && coelho.numero_coelho.toString().includes(busca)) ||
+      (coelho.raca_coelho || '').toLowerCase().includes(busca)
+    );
+
+    if (tipoOk && statusOk && buscaOk) {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${coelho.numero_coelho}</td>
-        <td>${coelho.nome_coelho}</td>
-        <td>${coelho.raca_coelho}</td>
+        <td>${coelho.numero_coelho ?? '-'}</td>
+        <td>${coelho.nome_coelho ?? '-'}</td>
+        <td>${coelho.raca_coelho ?? '-'}</td>
         <td>${coelho.matriz_coelho || '-'}</td>
         <td>${coelho.reprodutor_coelho || '-'}</td>
       `;
@@ -76,10 +54,6 @@ function filtrarPorTipo(tipo) {
     }
   });
 }
-
-
-
-
 
 function selecionarcoelho(tr, idCoelho) {
   tr.style.cursor = 'pointer';

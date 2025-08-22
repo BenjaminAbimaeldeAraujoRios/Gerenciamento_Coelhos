@@ -16,11 +16,17 @@ window.onload = async () => {
     const matriz = Array.isArray(data) ? data[0] : data;
 
     document.getElementById('data_parto').value = matriz.data_parto ? matriz.data_parto.slice(0,10) : '';
-    document.getElementById('laparos').value = matriz.laparos || '';
-    document.getElementById('laparos_mortos').value = matriz.laparos_mortos || '';
-    document.getElementById('laparos_transferidos').value = matriz.laparos_transferidos || '';
-    document.getElementById('peso_total_ninhada').value = matriz.peso_total_ninhada || '';
-    document.getElementById('numero_reprodutor').value = matriz.numero_reprodutor || '';
+    document.getElementById('data_cobertura').value = matriz.data_cobertura ? matriz.data_cobertura.slice(0,10) : '';
+    document.getElementById('data_palpação').value = matriz.data_palpação ? matriz.data_palpação.slice(0,10) : '';
+  document.getElementById('palpação_resultado').value = matriz.palpação_resultado ?? '';
+  document.getElementById('ninho').value = matriz.ninho ?? '';
+  document.getElementById('laparos').value = matriz.laparos ?? '';
+  document.getElementById('laparos_mortos').value = matriz.laparos_mortos ?? '';
+  document.getElementById('laparos_transferidos').value = matriz.laparos_transferidos ?? '';
+  document.getElementById('peso_total_ninhada').value = matriz.peso_total_ninhada ?? '';
+    document.getElementById('data_desmame').value = matriz.data_desmame ? matriz.data_desmame.slice(0,10) : '';
+  document.getElementById('total_desmame').value = matriz.total_desmame ?? '';
+  document.getElementById('numero_reprodutor').value = matriz.numero_reprodutor ?? '';
 
   } catch (err) {
     alert('Erro ao carregar dados.');
@@ -65,6 +71,7 @@ async function excluir() {
     console.log('Status da exclusão:', res.status, errorDetail);
     
     if (res.ok) {
+      alert('Registro de matriz excluído com sucesso.');
       window.location.href = `index_matriz.html${coelhoId ? `?coelho_id=${coelhoId}` : ''}`;
     } else {
       alert(`Erro ao excluir matriz (status ${res.status})${errorDetail}`);

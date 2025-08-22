@@ -90,3 +90,16 @@ function selecionarLinha(tr, url) {
     });
   }
 }
+
+function voltar() {
+  const params = new URLSearchParams(window.location.search);
+  const coelhoId = params.get('coelho_id') || params.get('id') || null;
+  
+  if (coelhoId) {
+    // Se temos coelho_id, volta para a ficha do coelho
+    window.location.href = `ficha.html?id=${coelhoId}`;
+  } else {
+    // Se não temos coelho_id, usa history.back()
+    window.history.back();
+  }
+}

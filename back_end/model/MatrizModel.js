@@ -3,30 +3,49 @@ const Database = require('../database');
 class Matriz {
   // Insere um registro de matriz (parto)
   async insertMatriz(matriz) {
+    console.log('MatrizModel.insertMatriz - dados recebidos:', matriz);
     if (!matriz || !matriz.id_coelho) {
       throw new Error('Matriz.insertMatriz: id_coelho (pai) é obrigatório');
     }
+    
     const sql = `
       INSERT INTO matriz (
         id_coelho,
         data_parto,
+        data_cobertura,
+        "data_palpação",
+        "palpação_resultado",
+        ninho,
         laparos,
         laparos_mortos,
         laparos_transferidos,
         peso_total_ninhada,
+        data_desmame,
+        total_desmame,
         numero_reprodutor
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7)
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
       RETURNING id_matriz
     `;
-    const res = await Database.query(sql, [
+    
+    const params = [
       matriz.id_coelho,
       matriz.data_parto,
-      matriz.laparos,
-      matriz.laparos_mortos,
-      matriz.laparos_transferidos,
-      matriz.peso_total_ninhada,
-      matriz.numero_reprodutor || null
-    ]);
+      matriz.data_cobertura || null,
+      matriz.data_palpação || null,
+      matriz.palpação_resultado || null,
+  (matriz.ninho ?? null),
+  (matriz.laparos ?? null),
+  (matriz.laparos_mortos ?? null),
+  (matriz.laparos_transferidos ?? null),
+  (matriz.peso_total_ninhada ?? null),
+      matriz.data_desmame || null,
+  (matriz.total_desmame ?? null),
+  (matriz.numero_reprodutor ?? null)
+    ];
+    
+    console.log('MatrizModel.insertMatriz - SQL:', sql);
+    console.log('MatrizModel.insertMatriz - params:', params);
+    const res = await Database.query(sql, params);
     return res && res[0] ? res[0] : null;
   }
 
@@ -65,22 +84,34 @@ class Matriz {
       UPDATE matriz SET
         id_coelho=$1,
         data_parto=$2,
-        laparos=$3,
-        laparos_mortos=$4,
-        laparos_transferidos=$5,
-        peso_total_ninhada=$6,
-        numero_reprodutor=$7
-      WHERE id_matriz=$8
+        data_cobertura=$3,
+        "data_palpação"=$4,
+        "palpação_resultado"=$5,
+        ninho=$6,
+        laparos=$7,
+        laparos_mortos=$8,
+        laparos_transferidos=$9,
+        peso_total_ninhada=$10,
+        data_desmame=$11,
+        total_desmame=$12,
+        numero_reprodutor=$13
+      WHERE id_matriz=$14
       RETURNING *
     `;
     const res = await Database.query(sql, [
       matriz.id_coelho,
       matriz.data_parto,
-      matriz.laparos,
-      matriz.laparos_mortos,
-      matriz.laparos_transferidos,
-      matriz.peso_total_ninhada,
-      matriz.numero_reprodutor || null,
+      matriz.data_cobertura || null,
+      matriz.data_palpação || null,
+      matriz.palpação_resultado || null,
+  (matriz.ninho ?? null),
+  (matriz.laparos ?? null),
+  (matriz.laparos_mortos ?? null),
+  (matriz.laparos_transferidos ?? null),
+  (matriz.peso_total_ninhada ?? null),
+      matriz.data_desmame || null,
+  (matriz.total_desmame ?? null),
+  (matriz.numero_reprodutor ?? null),
       id
     ]);
     return res && res[0] ? res[0] : null;

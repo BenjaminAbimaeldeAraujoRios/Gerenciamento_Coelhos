@@ -48,11 +48,11 @@ function preencherTabela(matrizes) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${matriz.data_parto ? new Date(matriz.data_parto).toLocaleDateString('pt-BR') : '-'}</td>
-      <td>${matriz.laparos || '-'}</td>
-      <td>${matriz.laparos_mortos || '-'}</td>
-      <td>${matriz.laparos_transferidos || '-'}</td>
-      <td>${matriz.peso_total_ninhada || '-'}</td>
-      <td>${matriz.numero_reprodutor || '-'}</td>
+  <td>${matriz.laparos ?? '-'}</td>
+  <td>${matriz.laparos_mortos ?? '-'}</td>
+  <td>${matriz.laparos_transferidos ?? '-'}</td>
+  <td>${matriz.peso_total_ninhada ?? '-'}</td>
+  <td>${matriz.numero_reprodutor ?? '-'}</td>
     `;
     // Construir URL com ambos os IDs: o da matriz (id_matriz) e o do coelho pai (coelho_id)
     const params = new URLSearchParams(window.location.search);
@@ -85,6 +85,19 @@ function selecionarLinha(tr, url) {
       const target = 'adicionar_matriz.html' + (coelhoId ? `?coelho_id=${coelhoId}` : '');
       window.location.href = target;
     });
+  }
+}
+
+function voltar() {
+  const params = new URLSearchParams(window.location.search);
+  const coelhoId = params.get('coelho_id') || params.get('id') || null;
+  
+  if (coelhoId) {
+    // Se temos coelho_id, volta para a ficha do coelho
+    window.location.href = `ficha.html?id=${coelhoId}`;
+  } else {
+    // Se não temos coelho_id, usa history.back()
+    window.history.back();
   }
 }
 

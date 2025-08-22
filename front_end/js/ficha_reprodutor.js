@@ -65,6 +65,7 @@ async function excluir(){
     console.log('Status da exclusão:', res.status, errorDetail);
     
     if (res.ok) {
+      alert('Registro de reprodutor excluído com sucesso.');
       window.location.href = `index_reprodutor.html${coelhoId ? `?coelho_id=${coelhoId}` : ''}`;
     } else {
       alert(`Erro ao excluir reprodutor (status ${res.status})${errorDetail}`);

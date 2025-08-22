@@ -12,6 +12,9 @@ window.onload = async () => {
       const reprodutor = Array.isArray(data) ? data[0] : data;
       // ensure we know the parent coelho when editing so PATCH includes id_coelho
       if (!coelhoId && reprodutor && reprodutor.id_coelho) coelhoId = reprodutor.id_coelho;
+  // change Back button to Cancelar in edit mode
+  const btnVoltar = document.getElementById('btnVoltar');
+  if (btnVoltar) btnVoltar.textContent = 'Cancelar';
       
       document.getElementById('data_acasalamento').value = reprodutor.data_acasalamento ? reprodutor.data_acasalamento.slice(0,10) : '';
       document.getElementById('numero_laparos').value = reprodutor.numero_laparos || '';
@@ -36,12 +39,14 @@ async function salvar() {
   try {
     const targetCoelho = payload.id_coelho || (coelhoId ? parseInt(coelhoId, 10) : null);
     if (id) {
+      if (!confirm('Tem certeza que deseja salvar as alterações deste reprodutor?')) return;
       const res = await fetch(`${apiurl}/reprodutor/${id}`, { 
         method: 'PATCH', 
         headers: {'Content-Type':'application/json'}, 
         body: JSON.stringify(payload) 
       });
       if (res.ok) {
+        alert('Reprodutor atualizado com sucesso!');
         window.location.href = `index_reprodutor.html${targetCoelho ? `?coelho_id=${targetCoelho}` : ''}`;
       } else {
         alert('Erro ao atualizar');
@@ -53,6 +58,7 @@ async function salvar() {
         body: JSON.stringify(payload) 
       });
       if (res.ok) {
+        alert('Reprodutor criado com sucesso!');
         window.location.href = `index_reprodutor.html${targetCoelho ? `?coelho_id=${targetCoelho}` : ''}`;
       } else {
         alert('Erro ao adicionar');
@@ -62,4 +68,14 @@ async function salvar() {
     console.error(err); 
     alert('Erro de conexão'); 
   }
+}
+
+function voltar(){
+  // In edit mode, confirm before leaving to avoid losing unsaved changes
+  if (id) {
+    if (!confirm('Deseja sair? Suas alterações não serão salvas.')) return;
+  }
+  // keep the coelho filter when returning
+  if (coelhoId) window.location.href = `index_reprodutor.html?coelho_id=${coelhoId}`;
+  else window.history.back();
 }

@@ -147,18 +147,24 @@ app.post('/alterarSenha', async (req, res) => {
   });
 
  app.post('/matriz', async (req, res) => {
+  console.log('POST /matriz - req.body:', req.body);
+  console.log('POST /matriz - req.query:', req.query);
   try {
     // validate required parent id
     const idCoelho = req.body && (req.body.id_coelho || req.body.coelho_id || req.query.coelho_id);
+    console.log('POST /matriz - idCoelho extraído:', idCoelho);
     if (!idCoelho) {
       return res.status(400).json({ erro: 'id_coelho (coelho pai) é obrigatório ao criar uma matriz' });
     }
     // coerce to integer
     req.body.id_coelho = parseInt(idCoelho, 10);
-    await MatrizRota.insertMatriz(req.body);
+    console.log('POST /matriz - req.body final:', req.body);
+    const result = await MatrizRota.insertMatriz(req.body);
+    console.log('POST /matriz - resultado da inserção:', result);
     res.sendStatus(201);
   } catch (error) {
     console.error('Erro ao adicionar matriz:', error);
+    console.error('Stack trace:', error.stack);
     res.status(500).json({ erro: 'Erro interno' });
   }
 });

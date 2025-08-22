@@ -30,7 +30,7 @@ window.onload = async () => {
   document.getElementById("situacao_coelho").value = coelho.situacao_coelho || coelho.situacao || "";
   document.getElementById("transferido_coelho").value = coelho.transferido_coelho || "";
 
-    esconderbotaolaparo();
+  esconderbotaolaparo();
 
   } catch (err) {
     alert("Erro ao carregar dados do coelho.");
@@ -39,12 +39,14 @@ window.onload = async () => {
 };
 
 function esconderbotaolaparo() {
-  const tipo = document.getElementById("tipo_coelho")?.value;
-
-  if (tipo && tipo.toLowerCase() === "láparo") {
-    const botao = document.getElementById("botaocruzas");
-    if (botao) {
-      botao.style.display = "none";
-    }
+  const tipo = document.getElementById("tipo_coelho")?.value || '';
+  // normaliza para comparar sem acento e sem maiúsculas
+  const normalizado = tipo
+    .normalize('NFD')
+    .replace(/\p{Diacritic}/gu, '')
+    .toLowerCase();
+  if (normalizado === 'laparo') {
+    const botao = document.getElementById('botaocruzas');
+    if (botao) botao.style.display = 'none';
   }
 }

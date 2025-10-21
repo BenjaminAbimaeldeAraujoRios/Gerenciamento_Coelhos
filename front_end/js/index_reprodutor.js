@@ -1,6 +1,7 @@
 const apiurl = "http://localhost:3000";
 
 function initReprodutoresPage() {
+  aplicarRestricoesAluno();
   const params = new URLSearchParams(window.location.search);
   const coelhoId = params.get('coelho_id') || params.get('id') || null; // prefer explicit coelho_id
   const fetchUrl = apiurl + '/reprodutor' + (coelhoId ? `?coelho_id=${coelhoId}` : '');
@@ -25,6 +26,17 @@ function initReprodutoresPage() {
     .catch(err => {
       mostrarSemDados();
     });
+}
+
+function aplicarRestricoesAluno(){
+  try{
+    const raw = localStorage.getItem('usuario_atual');
+    const user = raw ? JSON.parse(raw) : null;
+    if (user && (user.tipoususario || '').toLowerCase() === 'aluno'){
+      const addBtn = document.getElementById('btnAdicionar');
+      if (addBtn) addBtn.style.display = 'none';
+    }
+  }catch(e){}
 }
 
 // ensure initialization runs whether DOMContentLoaded already fired or not

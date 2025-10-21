@@ -9,6 +9,7 @@ if (!id) {
 }
 
 window.onload = async () => {
+  aplicarRestricoesAluno();
   try {
     const res = await fetch(`${apiurl}/matriz/${id}`);
     if (!res.ok) throw new Error('Erro ao buscar matriz: ' + res.status);
@@ -32,6 +33,24 @@ window.onload = async () => {
     alert('Erro ao carregar dados.');
   }
 };
+
+function aplicarRestricoesAluno(){
+  try{
+    const raw = localStorage.getItem('usuario_atual');
+    const user = raw ? JSON.parse(raw) : null;
+    if (user && (user.tipoususario || '').toLowerCase() === 'aluno'){
+      const buttons = document.querySelector('.buttons');
+      if (buttons){
+        const btns = buttons.querySelectorAll('button');
+        btns.forEach(btn => {
+          if (btn.textContent && (btn.textContent.includes('Editar') || btn.textContent.includes('Excluir'))){
+            btn.style.display = 'none';
+          }
+        });
+      }
+    }
+  }catch(e){}
+}
 
 function editar(){
   window.location.href = `adicionar_matriz.html?id=${id}${coelhoId ? `&coelho_id=${coelhoId}` : ''}`;

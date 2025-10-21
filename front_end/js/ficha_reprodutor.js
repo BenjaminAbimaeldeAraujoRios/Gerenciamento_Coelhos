@@ -9,6 +9,7 @@ if (!id) {
 }
 
 window.onload = async () => {
+  aplicarRestricoesAluno();
   try {
     // Carregar dados do reprodutor
     const res = await fetch(`${apiurl}/reprodutor/${id}`);
@@ -26,6 +27,24 @@ window.onload = async () => {
   } catch(err) {
     alert('Erro ao carregar dados');
   }
+}
+
+function aplicarRestricoesAluno(){
+  try{
+    const raw = localStorage.getItem('usuario_atual');
+    const user = raw ? JSON.parse(raw) : null;
+    if (user && (user.tipoususario || '').toLowerCase() === 'aluno'){
+      const buttons = document.querySelector('.buttons');
+      if (buttons){
+        const btns = buttons.querySelectorAll('button');
+        btns.forEach(btn => {
+          if (btn.textContent && (btn.textContent.includes('Editar') || btn.textContent.includes('Excluir'))){
+            btn.style.display = 'none';
+          }
+        });
+      }
+    }
+  }catch(e){}
 }
 
 function editar(){

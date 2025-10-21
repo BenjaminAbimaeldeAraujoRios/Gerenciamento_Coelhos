@@ -7,6 +7,10 @@ const { Pool } = require('pg');
 
     const steps = [
       {
+        name: 'add_tipoususario_to_usuario',
+        sql: `ALTER TABLE usuario ADD COLUMN IF NOT EXISTS tipoususario TEXT;`
+      },
+      {
         name: 'add_numero_matriz_to_reprodutor',
         sql: `ALTER TABLE reprodutor ADD COLUMN IF NOT EXISTS numero_matriz INTEGER;`
       },

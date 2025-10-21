@@ -5,7 +5,22 @@ function normalizeStr(s) {
   return (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
 }
 
+function clicarbotao() {
+  window.location.href = 'Adicionar_coelho.html';
+}
+
+async function fazerLogout() {
+  try {
+    await fetch(apiurl + '/logout', { method: 'POST' });
+  } catch(e) {}
+  localStorage.removeItem('usuario_atual');
+  localStorage.removeItem('id_usuario');
+  window.location.href = 'login.html';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  aplicarRestricoesAluno();
+  carregarNomeUsuario();
   fetch(apiurl + '/coelhos')
     .then(res => res.json())
     .then(data => {
@@ -21,7 +36,31 @@ document.addEventListener('DOMContentLoaded', () => {
   if (searchInput) searchInput.addEventListener('input', aplicarFiltros);
   if (typeFilter) typeFilter.addEventListener('change', aplicarFiltros);
   if (statusFilter) statusFilter.addEventListener('change', aplicarFiltros);
+  
+  // Menu flutuante do usuário
+  const userBadge = document.getElementById('userBadge');
+  const userMenu = document.getElementById('userMenu');
+  if (userBadge && userMenu) {
+    userBadge.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.style.display = userMenu.style.display === 'block' ? 'none' : 'block';
+    });
+    document.addEventListener('click', () => {
+      userMenu.style.display = 'none';
+    });
+  }
 });
+
+function aplicarRestricoesAluno(){
+  try{
+    const raw = localStorage.getItem('usuario_atual');
+    const user = raw ? JSON.parse(raw) : null;
+    if (user && (user.tipoususario || '').toLowerCase() === 'aluno'){
+      const addBtn = document.querySelector('.add-button button');
+      if (addBtn) addBtn.style.display = 'none';
+    }
+  }catch(e){}
+}
 
 function aplicarFiltros() {
   const tbody = document.getElementById('coelhoTableBody');
@@ -60,4 +99,15 @@ function selecionarcoelho(tr, idCoelho) {
   tr.addEventListener('click', () => {
     window.location.href = `ficha.html?id=${idCoelho}`;
   });
+}
+
+function carregarNomeUsuario() {
+  try {
+    const raw = localStorage.getItem('usuario_atual');
+    const user = raw ? JSON.parse(raw) : null;
+    const userName = document.getElementById('userName');
+    if (userName && user) {
+      userName.textContent = user.nome_usuario || user.email || 'Usuário';
+    }
+  } catch(e) {}
 }

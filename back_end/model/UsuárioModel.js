@@ -5,7 +5,7 @@ class Usuario{
 
     async selectUsuarios(){
         
-        const res= await Database.query("Select * from usuario");
+           const res= await Database.query("Select * from usuario");
         return res;
         
     }
@@ -16,14 +16,14 @@ class Usuario{
     }
    async insertUsuario(usuario){
         
-        const sql=("INSERT INTO usuario (nome_usuario,email,senha,tempero)values($1,$2,$3,$4) ")
-        const res= await Database.query(sql,[usuario.nome_usuario,usuario.email,usuario.senha,usuario.tempero]);
+                const sql=("INSERT INTO usuario (nome_usuario,email,senha,tempero,tipoususario)values($1,$2,$3,$4,$5) ")
+                const res= await Database.query(sql,[usuario.nome_usuario,usuario.email,usuario.senha,usuario.tempero,usuario.tipoususario || null]);
         
     }
      async updateUsuario(id,usuario){
     
-        const sql=("UPDATE  usuario set  nome_usuario=$1,email=$2,senha=$3 where id_usuario=$4")
-        const res= await Database.query(sql,[usuario.nome_usuario,usuario.email,usuario.senha,id]);
+                const sql=("UPDATE  usuario set  nome_usuario=$1,email=$2,senha=$3,tipoususario=$4 where id_usuario=$5")
+                const res= await Database.query(sql,[usuario.nome_usuario,usuario.email,usuario.senha,usuario.tipoususario || null,id]);
       return res;
         
     }

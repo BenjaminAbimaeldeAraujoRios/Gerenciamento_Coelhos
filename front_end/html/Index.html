@@ -5,15 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Cadastro de Coelhos</title>
   <link rel="stylesheet" href="/front_end/css/index_styles.css" />
-  <script>
-    function clicarbotao() {
-  window.location.href = 'Adicionar_coelho.html';
-    }
-  </script>
 </head>
 <body>
   <div class="container">
-    
+    <div class="user-info-container">
+      <div class="user-badge" id="userBadge">
+        <span class="user-icon">👤</span>
+        <span id="userName">Usuário</span>
+        <div class="user-menu" id="userMenu">
+          <button onclick="fazerLogout()">Sair</button>
+        </div>
+      </div>
+    </div>
 
     <div class="toolbar">
       <div class="toolbar-left">

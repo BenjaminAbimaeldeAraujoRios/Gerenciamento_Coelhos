@@ -7,7 +7,7 @@ const {Reprodutor} = require('../model/ReprodutorModel');
 
 
 module.exports.rotas = function(app) {
-    const UsuarioRota = new Usuario();//Instância a classe Usuario para usar as funções da mesma
+    const UsuarioRota = new Usuario();
     const CoelhosRota=new CoelhoModel();
    const MatrizRota=new Matriz();
    const ReprodutorRota= new Reprodutor();
@@ -75,6 +75,11 @@ app.post('/alterarSenha', async (req, res) => {
         return res.status(400).send("Email e senha são obrigatórios.");
     }
 
+  // Bloqueia alteração de senha do admin
+  if (typeof email === 'string' && email.toLowerCase() === 'admin@gmail.com') {
+    return res.status(403).send('Não é permitido alterar a senha do usuário admin.');
+  }
+
     const usuario = await UsuarioRota.login(email);
 
     if (!usuario) {
@@ -100,7 +105,7 @@ app.post('/alterarSenha', async (req, res) => {
 
   app.post('/usuario', async (req, res) => {
     try {
-      const { nome_usuario, email, senha } = req.body;
+      const { nome_usuario, email, senha, tipoususario } = req.body;
 
       if(!nome_usuario) {
         return res.status(400).send("Faltou o nome!");
@@ -108,6 +113,11 @@ app.post('/alterarSenha', async (req, res) => {
 
       if(!email || !/[a-z]+@[a-z\.]+\.com/.test(email) || email.length > 300) {
         return res.status(400).send("Email inválido!");
+      }
+
+      // Bloquear criação do usuário admin fora do fluxo controlado
+      if (typeof email === 'string' && email.toLowerCase() === 'admin@gmail.com') {
+        return res.status(403).send('Criação do usuário admin é bloqueada.');
       }
 
       if(!senha || senha.length < 8) {
@@ -119,7 +129,8 @@ app.post('/alterarSenha', async (req, res) => {
         nome_usuario,
         email,
         senha: resultado.hash,
-        tempero: resultado.salt
+        tempero: resultado.salt,
+        tipoususario: tipoususario || null
       };
 
       const usuario = await UsuarioRota.insertUsuario(novoUsuario);
@@ -158,13 +169,52 @@ app.post('/alterarSenha', async (req, res) => {
   });
 
   app.patch('/usuario/:id', async (req, res) => {
-    await UsuarioRota.updateUsuario(req.params.id, req.body);
-    res.sendStatus(200);
+    try {
+      // Busca o usuário alvo para validar se é o admin
+      const alvo = await UsuarioRota.selectUsuarios_por_id(req.params.id);
+      const user = Array.isArray(alvo) ? (alvo[0] || null) : alvo;
+
+      if (!user) {
+        return res.status(404).send('Usuário não encontrado.');
+      }
+
+      if (user.email && typeof user.email === 'string' && user.email.toLowerCase() === 'admin@gmail.com') {
+        return res.status(403).send('Não é permitido editar os dados do usuário admin.');
+      }
+
+      // Impedir alteração do email de qualquer usuário para o email do admin
+      if (req.body && typeof req.body.email === 'string' && req.body.email.toLowerCase() === 'admin@gmail.com') {
+        return res.status(403).send('Não é permitido alterar email para o do admin.');
+      }
+
+      await UsuarioRota.updateUsuario(req.params.id, req.body);
+      res.sendStatus(200);
+    } catch (e) {
+      console.error('Erro ao editar usuário:', e);
+      res.status(500).send('Erro interno');
+    }
   });
 
   app.delete('/usuario/:id', async (req, res) => {
-    await UsuarioRota.excluirUsuario(req.params.id);
-    res.sendStatus(204);
+    try {
+      // Busca o usuário alvo para validar se é o admin
+      const alvo = await UsuarioRota.selectUsuarios_por_id(req.params.id);
+      const user = Array.isArray(alvo) ? (alvo[0] || null) : alvo;
+
+      if (!user) {
+        return res.sendStatus(204); // idempotente
+      }
+
+      if (user.email && typeof user.email === 'string' && user.email.toLowerCase() === 'admin@gmail.com') {
+        return res.status(403).send('Não é permitido excluir o usuário admin.');
+      }
+
+      await UsuarioRota.excluirUsuario(req.params.id);
+      res.sendStatus(204);
+    } catch (e) {
+      console.error('Erro ao excluir usuário:', e);
+      res.status(500).send('Erro interno');
+    }
   });
 
   // Coelho

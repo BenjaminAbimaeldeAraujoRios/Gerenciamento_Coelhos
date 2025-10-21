@@ -19,16 +19,34 @@
 	border-radius: 10px;
 	padding: 28px;
 	width: 100%;
-	max-width: 760px;
+	max-width: 520px;
 	box-shadow: 0 10px 30px rgba(0,0,0,.25);
 }
 
 /* Layout do formulário em duas colunas, similar às fichas */
-#userFormModal .modal .form-box { display: flex; gap: 40px; }
+#userFormModal .modal .form-box { display: flex; gap: 20px; }
 #userFormModal .modal .left,
-#userFormModal .modal .right { display: flex; flex-direction: column; gap: 10px; }
-#userFormModal .modal label { display: flex; flex-direction: column; font-weight: bold; font-size: 14px; }
-#userFormModal .modal input { margin-top: 4px; padding: 6px; border: none; border-radius: 6px; width: 160px; }
+#userFormModal .modal .right { 
+	display: flex; 
+	flex-direction: column; 
+	gap: 10px;
+	flex: 1;
+}
+#userFormModal .modal label { 
+	display: flex; 
+	flex-direction: column; 
+	font-weight: bold; 
+	font-size: 14px;
+}
+#userFormModal .modal input,
+#userFormModal .modal select { 
+	margin-top: 4px; 
+	padding: 8px; 
+	border: none; 
+	border-radius: 6px; 
+	width: 100%;
+	font-size: 14px;
+}
 
 /* Botões do modal */
 #userFormModal .modal .buttons { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
@@ -61,7 +79,14 @@
 
 /* Layout só desta página (não mexe no body global das fichas) */
 body.controle-page { display: block; height: auto; padding: 20px; }
-.controle-container { max-width: 1040px; margin: 0 auto; }
+.controle-container { 
+	max-width: 800px; 
+	margin: 0 auto;
+	background: #b3f0c7;
+	border-radius: 10px;
+	padding: 20px;
+	box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
 .controle-container .toolbar { margin-bottom: 16px; }
 .controle-container table th,
 .controle-container table td { padding: 12px; }

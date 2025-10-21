@@ -18,7 +18,8 @@ async function loginUsuario() {
     if (response.ok) {
       const data = await response.json();
       
-    
+      // guardar dados do usuário logado para aplicar regras de UI
+      try { localStorage.setItem("usuario_atual", JSON.stringify(data.usuario || {})); } catch(e) {}
       localStorage.setItem("id_usuario", data.usuario.id_usuario);
       
       alert(data.mensagem);

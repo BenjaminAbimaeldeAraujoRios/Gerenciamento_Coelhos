@@ -1,4 +1,6 @@
 const apiurl = 'http://localhost:3000';
+const ADMIN_EMAIL = 'admin@gmail.com';
+const isAdminEmail = (e) => (e || '').toLowerCase() === ADMIN_EMAIL;
 let usuarios = [];
 let editingUser = null; // armazena usuário em edição ou null para novo
 
@@ -65,19 +67,22 @@ function renderUsuarios() {
   tbody.innerHTML = '';
   lista.forEach((u) => {
     const tr = document.createElement('tr');
+    const isAdmin = isAdminEmail(u.email);
 
     const tdId = document.createElement('td');
     tdId.textContent = u.id_usuario;
 
     const tdNome = document.createElement('td');
-    tdNome.textContent = u.nome_usuario || '-';
+    tdNome.textContent = (u.nome_usuario || '-') + (isAdmin ? ' (admin)' : '');
 
     const tdEmail = document.createElement('td');
     tdEmail.textContent = u.email || '-';
     
-    // Row click abre edição
-    tr.style.cursor = 'pointer';
-    tr.addEventListener('click', () => openUserForm(u));
+    // Row click abre edição (desabilitar para admin)
+    tr.style.cursor = isAdmin ? 'default' : 'pointer';
+    if (!isAdmin) {
+      tr.addEventListener('click', () => openUserForm(u));
+    }
 
     tr.appendChild(tdId);
     tr.appendChild(tdNome);
@@ -88,22 +93,29 @@ function renderUsuarios() {
 }
 
 function openUserForm(user = null) {
+  // Não permitir abrir form de edição para admin
+  if (user && isAdminEmail(user.email)) {
+    showMessage('Usuário admin não pode ser editado/excluído.', 'info');
+    return;
+  }
   editingUser = user ? { ...user } : null;
   const modal = document.getElementById('userFormModal');
   const title = document.getElementById('userFormTitle');
   const nome = document.getElementById('nome_usuario');
   const email = document.getElementById('email_usuario');
+  const tipo = document.getElementById('tipo_usuario');
   const senha = document.getElementById('senha_usuario');
 
   title.textContent = user ? 'Editar Usuário' : 'Novo Usuário';
   nome.value = user?.nome_usuario || '';
   email.value = user?.email || '';
+  if (tipo) tipo.value = (user?.tipoususario || '');
   senha.value = '';
 
   if (modal) modal.style.display = 'flex';
-  // Mostrar/esconder botão excluir conforme modo
+  // Mostrar/esconder botão excluir conforme modo (e esconder para admin)
   const delBtn = document.getElementById('deleteUserBtn');
-  if (delBtn) delBtn.style.display = user ? 'inline-block' : 'none';
+  if (delBtn) delBtn.style.display = user && !isAdminEmail(user.email) ? 'inline-block' : 'none';
 }
 
 function closeUserForm() {
@@ -141,7 +153,9 @@ function hideConfirm(result) {
 async function salvarUsuarioViaForm() {
   const nome = document.getElementById('nome_usuario').value.trim();
   const email = document.getElementById('email_usuario').value.trim();
+  const tipo = (document.getElementById('tipo_usuario')?.value || '').trim();
   const senha = document.getElementById('senha_usuario').value;
+  const emailLower = (email || '').toLowerCase();
 
   if (!nome || !email || (!editingUser && !senha)) {
     showMessage('Preencha todos os campos obrigatórios.', 'error');
@@ -154,11 +168,15 @@ async function salvarUsuarioViaForm() {
 
   try {
     if (!editingUser) {
+      if (emailLower === ADMIN_EMAIL) {
+        showMessage('Criação do usuário admin é bloqueada.', 'error');
+        return;
+      }
       // criar novo
       const res = await fetch(apiurl + '/usuario', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome_usuario: nome, email, senha })
+        body: JSON.stringify({ nome_usuario: nome, email, senha, tipoususario: tipo || null })
       });
       if (res.ok) {
         closeUserForm();
@@ -173,13 +191,21 @@ async function salvarUsuarioViaForm() {
         }
       }
     } else {
+      if (isAdminEmail(editingUser.email)) {
+        showMessage('Usuário admin não pode ser editado.', 'error');
+        return;
+      }
       // editar existente: primeiro patch nome/email
-      const needPatch = nome !== (editingUser.nome_usuario || '') || email !== (editingUser.email || '');
+      const needPatch = nome !== (editingUser.nome_usuario || '') || email !== (editingUser.email || '') || tipo !== (editingUser.tipoususario || '');
+      if (needPatch && emailLower === ADMIN_EMAIL) {
+        showMessage('Não é permitido alterar email para o do admin.', 'error');
+        return;
+      }
       if (needPatch) {
         const resPatch = await fetch(`${apiurl}/usuario/${editingUser.id_usuario}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nome_usuario: nome, email, senha: editingUser.senha })
+          body: JSON.stringify({ nome_usuario: nome, email, senha: editingUser.senha, tipoususario: tipo || null })
         });
         if (!resPatch.ok) {
           const t = await resPatch.text();
@@ -189,6 +215,10 @@ async function salvarUsuarioViaForm() {
       }
       // senha opcional
       if (senha) {
+        if (emailLower === ADMIN_EMAIL) {
+          showMessage('Não é permitido alterar a senha do admin.', 'error');
+          return;
+        }
         const resSenha = await fetch(apiurl + '/alterarSenha', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -211,6 +241,10 @@ async function salvarUsuarioViaForm() {
 }
 
 async function excluirUsuario(u) {
+  if (isAdminEmail(u.email)) {
+    showMessage('Usuário admin não pode ser excluído.', 'error');
+    return;
+  }
   const ok = await showConfirm(`Deseja excluir o usuário "${u.nome_usuario || u.email}"?`);
   if (!ok) return;
   try {

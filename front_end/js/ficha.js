@@ -8,6 +8,7 @@ if (!id) {
 }
 
 window.onload = async () => {
+  aplicarRestricoesAluno();
   try {
     const res = await fetch(`${apiurl}/coelho/${id}`);
     if (!res.ok) throw new Error("Erro ao buscar coelho: " + res.status);
@@ -36,6 +37,20 @@ window.onload = async () => {
     alert("Erro ao carregar dados do coelho.");
   }
 };
+
+function aplicarRestricoesAluno(){
+  try{
+    const raw = localStorage.getItem('usuario_atual');
+    const user = raw ? JSON.parse(raw) : null;
+    if (user && (user.tipoususario || '').toLowerCase() === 'aluno'){
+      // Esconder apenas botão Editar - aluno pode ver Cruzamentos
+      const btnEditar = document.querySelector('.buttons button[onclick^="clicarbotao2"]');
+      if (btnEditar) btnEditar.style.display = 'none';
+      // NÃO esconder btnCruzas - aluno pode acessar registros de cruzamento
+    }
+  }catch(e){}
+}
+
 
 function esconderbotaolaparo() {
   const tipo = document.getElementById("tipo_coelho")?.value || '';

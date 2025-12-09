@@ -168,6 +168,7 @@ th {
   font-size: 16px;
 }
 
+/* RESET GERAL */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -229,4 +230,119 @@ th {
   color: #138871;
   background-color: rgba(22, 160, 133, 0.1);
   text-decoration: underline;
+}
+
+/* --- RESPONSIVIDADE MOBILE --- */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .system-header {
+    padding-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .title-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .header-logo {
+    width: 40px;
+  }
+
+  .system-title {
+    font-size: 1.8em;
+  }
+
+  .system-subtitle {
+    font-size: 0.9em;
+    padding: 0 10px;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 20px;
+    gap: 10px;
+  }
+
+  .toolbar-left {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* 🔹 Ajustes pedidos: deixar tudo do mesmo tamanho do botão */
+  .search-box input {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    box-sizing: border-box !important;
+    border-radius: 8px !important;
+    min-height: 42px !important;
+  }
+
+  .filter-box select {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px !important;
+    font-size: 14px !important;
+    box-sizing: border-box !important;
+    border-radius: 8px !important;
+    min-height: 42px !important;
+  }
+
+  .user-menu button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  .add-button {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .add-button button {
+    width: 100%;
+    padding: 10px !important;
+    font-size: 14px !important;
+  }
+
+  table {
+    font-size: 12px;
+    display: block;
+    overflow-x: auto;
+  }
+
+  th, td {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+
+  .user-info-container {
+    position: static;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  .user-badge {
+    display: inline-flex;
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .help-link {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
 }

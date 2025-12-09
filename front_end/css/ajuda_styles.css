@@ -66,3 +66,57 @@ body {
     .back-button a:hover {
       background-color: #138871;
     }
+
+/* Responsividade para Mobile */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 20px 15px;
+    max-width: 100%;
+  }
+
+  h1 {
+    font-size: 1.8em;
+    margin-bottom: 15px;
+  }
+
+  h2 {
+    font-size: 1.4em;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 14px;
+    margin: 10px 0;
+  }
+
+  .intro {
+    padding: 15px;
+  }
+
+  img {
+    max-width: 100%;
+    margin: 10px auto;
+  }
+
+  img.img-ficha {
+    max-width: 100%;
+  }
+
+  .back-button {
+    margin-top: 20px;
+  }
+
+  .back-button a {
+    padding: 10px 20px;
+    font-size: 14px;
+    width: auto;
+    max-width: 200px;
+    display: block;
+    margin: 0 auto;
+  }
+}

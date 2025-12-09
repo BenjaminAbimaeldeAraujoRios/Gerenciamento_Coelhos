@@ -71,10 +71,44 @@
 .message.error { background: #ffd6d6; color: #7a2222; display: block; }
 .message.info { background: #daf0ff; color: #154b72; display: block; }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
 	#userFormModal .modal,
 	#confirmModal .modal { max-width: 96vw; padding: 20px; }
 	#userFormModal .modal .form-box { flex-direction: column; gap: 16px; }
+
+	body.controle-page { padding: 10px; }
+
+	.controle-container {
+		padding: 15px;
+		border-radius: 8px;
+	}
+
+	.controle-container table {
+		font-size: 12px;
+		display: block;
+		overflow-x: auto;
+		white-space: nowrap;
+	}
+
+	.controle-container table th,
+	.controle-container table td {
+		padding: 8px 6px;
+	}
+
+	.controle-container .toolbar {
+		flex-direction: column;
+		gap: 10px;
+	}
+
+	#userFormModal .modal header,
+	#confirmModal .modal header {
+		font-size: 16px;
+	}
+
+	#userFormModal .modal .buttons button {
+		padding: 12px;
+		font-size: 15px;
+	}
 }
 
 /* Layout só desta página (não mexe no body global das fichas) */

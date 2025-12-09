@@ -100,3 +100,49 @@ a.button:hover {
   margin: 10px 0 0 0;
 }
 
+/* Responsividade para Mobile */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 25px 20px;
+    width: 95%;
+    max-width: 100%;
+  }
+
+  .container h2 {
+    font-size: 1.5em;
+  }
+
+  .logo-container {
+    margin-bottom: 15px;
+  }
+
+  .iffar-logo {
+    width: 80px;
+  }
+
+  .system-name {
+    font-size: 1.4em;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"] {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  button {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  a.button {
+    padding: 12px;
+    font-size: 16px;
+  }
+}
+
